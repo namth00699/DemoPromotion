@@ -1,0 +1,16 @@
+﻿@model List<MyAlloySite.DTO.ProductDTOModel>
+<div style="overflow:hidden; width:100%; padding-left:100px ; margin-bottom:20px; background-color:#333">
+    @foreach (var item in Model)
+    {
+        var imageUrl = (item.Image != null) ? Url.ContentUrl(item.Image) : "";
+        <div class="category-select" data-category-code="@item.Code" style="float: left; padding-bottom:20px">
+            <div style="text-align:center">
+                <div style="padding:30px">
+                    <img width="70" height="70" style="margin-left: auto; margin-right: auto; display:block;" src="@imageUrl"
+                         alt="@item.Name" />
+                    <span style="color:aliceblue">@item.Name</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>

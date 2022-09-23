@@ -1,0 +1,128 @@
+﻿@using MyAlloySite
+@model MyAlloySite.DTO.PromotionDTOModel
+
+@{ Layout = null; }
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<div class="container">
+    <div class="row">
+        @Html.Partial("~/Views/PromotionPage/CategoryListing.cshtml", Model.Categories)
+    </div>
+    @if (Model.SortItems != null && Model.SortItems.Any())
+    {
+        <div class="row" style="min-height:100px; margin:10px">
+            @Html.Partial("~/Views/PromotionPage/_Sorting.cshtml", Model.SortItems)
+        </div>
+    }
+    <div class="row">
+        <div id="outer-containter-product" class="col-list">
+            @Html.Partial("~/Views/PromotionPage/ProductListing.cshtml", Model.Products)
+        </div>
+    </div>
+    <div class="row" style="clear:both; display:flex; justify-content:center">
+        <button style="background-color: #333; color:aliceblue; width: 250px; padding: 15px 32px; " type="button" class="btn-primary" id="showMore">Show more</button>
+    </div>
+    <input id="pageIndex" type="hidden" value="1" />
+    <input id="pageSize" type="hidden" value=@Model.PageSize />
+    <input id="category" type="hidden" />
+    <input id="campaignName" type="hidden" value="@Model.CampaignName" />
+</div>
+
+<script>
+    $(document).ready(
+        $(function () {
+            $('.category-select').click(function () {
+                var self = $(this);
+                var url = '/api/content/GetProductByQuery';
+                var category = self[0].dataset.categoryCode;
+                $('#category').val(category);
+                var index = $('#pageIndex').val();
+                var size = $('#pageSize').val();
+                var campaign = $('#campaignName').val();
+                var sort = $('#sorting-product').find(":selected").val();;
+
+                $.ajax({
+                    url: url,
+                    data: { pageIndex: index, pageSize: size, category: category, campaign: campaign, sort: sort},
+                    type: 'Post',
+                    success: function (response) {
+                        $('.product-containter').remove();
+                        $('#outer-containter-product').append(response.html);
+                        if (!response.hasMore) {
+                            $('#showMore').hide();
+                            $('#pageIndex').val(1);
+                        }
+                        else {
+                            $('#showMore').show();
+                        }
+                    }
+                });
+            });
+        })
+    );
+
+    $(document).ready(
+        $(function () {
+            $('#showMore').click(function () {
+                var self = $(this);
+                var url = '/api/content/GetProductByQuery';
+                var category = $('#category').val();
+                var index = parseInt($('#pageIndex').val()) + 1;
+                var size = $('#pageSize').val();
+                var campaign = $('#campaignName').val();
+                var sort = $('#sorting-product').find(":selected").val();;
+
+                $.ajax({
+                    url: url,
+                    data: { pageIndex: index, pageSize: size, category: category, campaign: campaign, sort: sort},
+                    type: 'Post',
+                    success: function (response) {
+                        $('#pageIndex').val(index);
+                        //$('#product-containter').remove();
+                        $('#outer-containter-product').append(response.html);
+                        if (!response.hasMore) {
+                            $('#showMore').hide();
+                            $('#pageIndex').val(1);
+                        }
+                        else {
+                            $('#showMore').show();
+                        }
+                    }
+                });
+            });
+        })
+    );
+
+    $(document).ready(
+        $(function () {
+            $('#sorting-product').change(function () {
+                var self = $(this);
+                var url = '/api/content/GetProductByQuery';
+                var category = $('#category').val();
+                var index = $('#pageIndex').val();
+                var size = $('#pageSize').val();
+                var campaign = $('#campaignName').val();
+                var sort = self.find(":selected").val();;
+
+                $.ajax({
+                    url: url,
+                    data: { pageIndex: index, pageSize: size, category: category, campaign: campaign, sort: sort },
+                    type: 'Post',
+                    success: function (response) {
+                        $('.product-containter').remove();
+                        $('#outer-containter-product').append(response.html);
+                        if (!response.hasMore) {
+                            $('#showMore').hide();
+                            $('#pageIndex').val(1);
+                        }
+                        else {
+                            $('#showMore').show();
+                        }
+                    }
+                });
+            });
+        })
+    );
+</script>

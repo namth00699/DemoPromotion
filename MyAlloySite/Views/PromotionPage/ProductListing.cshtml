@@ -1,0 +1,24 @@
+﻿@model List<MyAlloySite.DTO.ProductDTOModel>
+
+<div class="product-containter">
+    @foreach (var item in Model)
+    {
+        var imageUrl = (item.Image != null) ? Url.ContentUrl(item.Image) : "";
+        <div style="float: left; width : 33.33%; padding-bottom:50px">
+            <div style="text-align:center">
+                <div>
+                    <span>@item.Name</span>
+                    <span>@item.Code</span>
+                </div>
+                <div>
+                    <img width="400" height="500" style="margin-left: auto; margin-right: auto; display:block" src="@imageUrl"
+                         alt="@item.Name" />
+                </div>
+                <div>
+                    <span>@item.ActualPrice USD</span>
+                    <span style="padding-left: 50px; text-decoration: line-through;">@item.OriginalPrice USD</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>
