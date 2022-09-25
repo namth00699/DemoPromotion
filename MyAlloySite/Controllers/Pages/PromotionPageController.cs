@@ -122,8 +122,9 @@ namespace MyAlloySite.Controllers.Pages
                 Categories = resultCategories,
                 CampaignName = campaignName,
                 SortItems = SortingExtension.GetSortingOption(),
-                PageSize = buildQueryService.GetPageSize(currentPage)
-            });
+                PageSize = buildQueryService.GetPageSize(currentPage),
+                CurrentPage = PageViewModel.Create(currentPage)
+            }); ;
         }
 
       

@@ -28,6 +28,19 @@ namespace MyAlloySite.Business.Initialization
                 .Include("~/Static/css/media.css")
                 .Include("~/Static/css/style.css", new CssRewriteUrlTransform())
                 .Include("~/Static/css/editmode.css"));
+
+            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
+                   "~/Static/js/jquery.js",
+                   "~/Scripts/bootstrap.js",
+                   "~/Scripts/respond.js"));
+
+            bundles.Add(new ScriptBundle("~/bundles/promotion").Include(
+                   "~/Static/js/Promotion/promotion.js"
+                  ));
+
+            bundles.Add(new StyleBundle("~/Content/css").Include(
+                   "~/Content/bootstrap.css",
+                   "~/Content/site.css"));
         }
 
         public void Uninitialize(InitializationEngine context)
