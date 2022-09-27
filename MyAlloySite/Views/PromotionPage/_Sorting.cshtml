@@ -1,6 +1,6 @@
 ﻿@model List<MyAlloySite.Models.ViewModels.SortModel>
-<div class="sorting" style="float:right; padding:30px">
-    <select name="sorting" id="sorting-product">
+<div class="sorting">
+    <select class="form-select" aria-label="Default select example" id="sorting-product">
         @foreach (var item in Model)
         {
             <option value="@item.Value">@item.Name</option>

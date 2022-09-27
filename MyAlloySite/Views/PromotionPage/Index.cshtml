@@ -15,7 +15,7 @@
     </div>
     @if (Model.SortItems != null && Model.SortItems.Any())
     {
-        <div class="row" style="min-height:100px; margin:10px">
+        <div class="d-flex flex-row-reverse bd-highlight mx-auto">
             @Html.Partial("~/Views/PromotionPage/_Sorting.cshtml", Model.SortItems)
         </div>
     }
