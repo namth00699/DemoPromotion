@@ -5,8 +5,14 @@ using System.Collections.Generic;
 
 namespace MyAlloySite.DTO
 {
-    public class PromotionViewModel : PaginationModel
+    public class PromotionViewModel : PageViewModel<PromotionPage>
     {
+        public PromotionViewModel(PromotionPage currentPage)
+           : base(currentPage)
+        {
+
+        }
+
         public string CampaignName { get; set; }
 
         public List<ProductDTOModel> Products { get; set; }
@@ -15,6 +21,6 @@ namespace MyAlloySite.DTO
 
         public List<SortModel> SortItems { get; set; }
 
-        public IPageViewModel<SitePageData> CurrentPage { get; set; }
+        public PaginationModel Paging { get; set; }
     }
 }

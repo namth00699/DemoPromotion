@@ -1,5 +1,6 @@
 ﻿using EPiServer.Find;
 using EPiServer.ServiceLocation;
+using MyAlloySite.Api;
 using MyAlloySite.Commerce.Products;
 using MyAlloySite.Constant;
 using MyAlloySite.Extensions;
@@ -14,9 +15,11 @@ namespace MyAlloySite.Service
     {
         ITypeSearch<CommonProducts> ApplySorting(string sort, ITypeSearch<CommonProducts> query);
 
-        ITypeSearch<CommonProducts> SetPageSize<T>(T currentPage, ITypeSearch<CommonProducts> query, int pageSize = 6, int pageIndex = 1) where T : PromotionPage;
+        ITypeSearch<CommonProducts> SetPageSize(ITypeSearch<CommonProducts> query, int pageSize = 6, int pageIndex = 1); 
 
-        int GetPageSize<T>(T currentPage) where T : PromotionPage;
+        ITypeSearch<CommonProducts> ApplyFilter(ProductRequestModel request, ITypeSearch<CommonProducts> query, IClient _client);
+
+        ITypeSearch<CommonProducts> ApplyFacet(ITypeSearch<CommonProducts> query);
     }
 
     [ServiceConfiguration(ServiceType = typeof(IBuildQueryService))]
@@ -77,18 +80,33 @@ namespace MyAlloySite.Service
             return query;
         }
 
-        public ITypeSearch<CommonProducts> SetPageSize<T>(T currentPage, ITypeSearch<CommonProducts> query, int pageSize = 6, int pageIndex = 1) where T : PromotionPage
+        public ITypeSearch<CommonProducts> SetPageSize(ITypeSearch<CommonProducts> query, int pageSize = 6, int pageIndex = 1)
         {
-            if (currentPage != null)
-            {
-                pageSize = GetPageSize<T>(currentPage);
-            }
             return query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
         }
 
-        public int GetPageSize<T>(T currentPage) where T : PromotionPage
+        public ITypeSearch<CommonProducts> ApplyFilter(ProductRequestModel request, ITypeSearch<CommonProducts> query, IClient _client)
         {
-            return currentPage.PageSize > 0 ? currentPage.PageSize : 6;
+            var filterProduct = _client.BuildFilter<CommonProducts>();
+            
+            if (!string.IsNullOrEmpty(request.Campaign))
+            {
+                filterProduct = filterProduct.And(s => s.IndexCampaignProduct().Match(request.Campaign));
+            }
+
+            if (!string.IsNullOrEmpty(request.Category))
+            {
+                filterProduct = filterProduct.And(s => s.IndexCategoriesProduct().Match(request.Category));
+            }
+
+            query = query.Filter(filterProduct);
+            return query;
+        }
+
+        public ITypeSearch<CommonProducts> ApplyFacet(ITypeSearch<CommonProducts> query)
+        {
+            query = query.TermsFacetFor(s => s.IndexCategoriesProduct());
+            return query;
         }
     }
 }

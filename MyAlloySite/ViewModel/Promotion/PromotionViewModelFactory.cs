@@ -1,0 +1,83 @@
+﻿using EPiServer;
+using EPiServer.Commerce.Marketing;
+using EPiServer.Find;
+using EPiServer.Find.Api.Facets;
+using EPiServer.ServiceLocation;
+using MyAlloySite.Api;
+using MyAlloySite.Commerce.Products;
+using MyAlloySite.DTO;
+using MyAlloySite.Extensions;
+using MyAlloySite.Models.Pages;
+using MyAlloySite.Service;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace MyAlloySite.ViewModel
+{
+    [ServiceConfiguration(typeof(IPromotionViewModelFactory))]
+    public class PromotionViewModelFactory : IPromotionViewModelFactory
+    {
+        private readonly IClient _client = ServiceLocator.Current.GetInstance<IClient>();
+        private readonly IContentLoader _contentLoader = ServiceLocator.Current.GetInstance<IContentLoader>();
+        private readonly ICommonOptionProvideService _optionProvide = ServiceLocator.Current.GetInstance<ICommonOptionProvideService>();
+        private readonly IBuildQueryService _buildQueryService = ServiceLocator.Current.GetInstance<IBuildQueryService>();
+        private readonly ICategoryService _categoryService = ServiceLocator.Current.GetInstance<ICategoryService>();
+
+        public PromotionViewModel Create(PromotionPage currentPage, ProductRequestModel request)
+        {
+            var promotionModel = new PromotionViewModel(currentPage);
+            var products = Search(currentPage, request);
+
+            if (products != null)
+            {
+                var convert = products as SearchResults<ProductDTOModel>;
+                promotionModel.Categories = GetFacets(convert);
+                promotionModel.Products = products.ToList();
+                promotionModel.CampaignName = currentPage != null ? _contentLoader.Get<SalesCampaign>(currentPage.Campaign).Name : string.Empty;
+                promotionModel.SortItems = _optionProvide.GetSortingOption();
+                promotionModel.Paging = new PaginationModel
+                {
+                    PageIndex = request.PageIndex,
+                    PageSize = request.PageSize,
+                    HasMore = request.PageIndex * request.PageSize < convert.TotalMatching
+                };
+            }
+
+            return promotionModel;
+        }
+
+        private List<ProductDTOModel> GetFacets(SearchResults<ProductDTOModel> products)
+        {
+            var categories = _categoryService.GetAllDisplayCategory();
+            var termCategories = products.Facets.FirstOrDefault() as TermsFacet;
+            var resultCategories = categories.Join(termCategories.Terms, a => a.Code, b => b.Term, (a, b) => a).ToList();
+            return resultCategories;
+        }
+
+        private IEnumerable<ProductDTOModel> Search(PromotionPage currentPage, ProductRequestModel model)
+        {
+            var query = _client.Search<CommonProducts>();
+            if(currentPage != null)
+            {
+                model.PageSize = currentPage.PageSize;
+            }
+
+            query = _buildQueryService.ApplyFilter(model, query, _client);
+            query = _buildQueryService.ApplyFacet(query);
+            query = _buildQueryService.ApplyFilter(model, query, _client);
+            query = _buildQueryService.ApplySorting(model.Sort, query);
+            query = _buildQueryService.SetPageSize(query, model.PageSize, model.PageIndex);
+
+            return query.Select(s => new ProductDTOModel
+            {
+                Name = s.Name,
+                Code = s.Code,
+                Description = s.Description,
+                Image = s.Thumbnail,
+                ActualPrice = s.IndexPromotion().ActualPrice,
+                OriginalPrice = s.IndexPromotion().OriginalPrice,
+                Percent = s.IndexPromotion().GreatestPercent
+            }).GetResult();
+        }
+    }
+}

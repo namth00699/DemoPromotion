@@ -10,6 +10,7 @@ using MyAlloySite.DTO;
 using MyAlloySite.Extensions;
 using MyAlloySite.Models.Pages;
 using MyAlloySite.Service;
+using MyAlloySite.ViewModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace MyAlloySite.Api
         private readonly IClient _client = ServiceLocator.Current.GetInstance<IClient>();
         private readonly IBuildQueryService _sortingService = ServiceLocator.Current.GetInstance<IBuildQueryService>();
         private readonly IEluxCache _eluxCache = ServiceLocator.Current.GetInstance<IEluxCache>();
+        private readonly IPromotionViewModelFactory _promotionViewModelFactory = ServiceLocator.Current.GetInstance<IPromotionViewModelFactory>();
         public ProductApiController()
         {
         }
@@ -42,8 +44,8 @@ namespace MyAlloySite.Api
                 var cacheKey = _eluxCache.BuildCacheKey(
                         new Dictionary<string, object>()
                         {
-                    { nameof(model), JsonConvert.SerializeObject(model) },
-                    { "language", ContentLanguage.PreferredCulture?.Name }
+                            { nameof(model), JsonConvert.SerializeObject(model) },
+                            { "language", ContentLanguage.PreferredCulture?.Name }
                         },
                         nameof(ProductApiController),
                         nameof(GetProductByQuery));
@@ -51,32 +53,8 @@ namespace MyAlloySite.Api
                 var results = _eluxCache.Get<ProductResponseModel>(cacheKey);
                 if (results == null)
                 {
-                    var query = _client.Search<CommonProducts>()
-                    .Filter(s => s.IndexCampaignProduct().Match(model.Campaign));
-                    var filter = _client.BuildFilter<CommonProducts>();
-
-                    if (!string.IsNullOrWhiteSpace(model.Category))
-                    {
-                        filter = filter.And(x => x.IndexCategoriesProduct().Match(model.Category));
-                    }
-
-                    query = query.Filter(filter);
-
-                    query = _sortingService.ApplySorting(model.Sort, query);
-                    query = _sortingService.SetPageSize<PromotionPage>(null, query, model.PageSize, model.PageIndex);
-                    var searchResults = query.Select(s => new ProductDTOModel
-                    {
-                        Name = s.Name,
-                        Code = s.Code,
-                        Description = s.Description,
-                        Image = s.Thumbnail,
-                        ActualPrice = s.IndexPromotion().ActualPrice,
-                        OriginalPrice = s.IndexPromotion().OriginalPrice,
-                        Percent = s.IndexPromotion().GreatestPercent
-                    }).GetResult();
-
-                    var hasMore = model.PageIndex * model.PageSize < searchResults.TotalMatching;
-                    results = new ProductResponseModel { HasMore = hasMore, ProductDTOModels = searchResults.ToList() };
+                    var searchResults = _promotionViewModelFactory.Create(null, model);
+                    results = new ProductResponseModel { HasMore = searchResults.Paging.HasMore, ProductDTOModels = searchResults.Products };
                     _eluxCache.Add(cacheKey, results, TimeSpan.FromHours(24), new[] { CacheMesterKeySpec.Categories.Promotion });
                 }
 

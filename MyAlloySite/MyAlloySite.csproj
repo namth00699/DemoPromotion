@@ -531,8 +531,12 @@
     <Compile Include="Promotions\BuyItemsGetGiftsProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\IBuildQueryService.cs" />
+    <Compile Include="Service\ICategoryService.cs" />
+    <Compile Include="Service\ICommonOptionProvideService.cs" />
     <Compile Include="Service\IEluxCache.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModel\Promotion\IPromotionViewModelFactory.cs" />
+    <Compile Include="ViewModel\Promotion\PromotionViewModelFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\Blocks\" />

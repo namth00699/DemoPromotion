@@ -9,7 +9,7 @@
 
 <div class="container">
     @Html.Partial("~/Views/Shared/CustomHeader.cshtml")
-    @{Html.RenderPartial("Breadcrumbs", Model.CurrentPage);}
+    @{Html.RenderPartial("Breadcrumbs", Model);}
     <div class="row">
         @Html.Partial("~/Views/PromotionPage/CategoryListing.cshtml", Model.Categories)
     </div>
@@ -28,7 +28,7 @@
         <button style="background-color: #333; color:aliceblue; width: 250px; padding: 15px 32px; " type="button" class="btn-primary" id="showMore">Show more</button>
     </div>
     <input id="pageIndex" type="hidden" value="1" />
-    <input id="pageSize" type="hidden" value=@Model.PageSize />
+    <input id="pageSize" type="hidden" value=@Model.CurrentPage.PageSize />
     <input id="category" type="hidden" />
     <input id="campaignName" type="hidden" value="@Model.CampaignName" />
 </div>
