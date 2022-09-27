@@ -2,10 +2,14 @@
 using EPiServer.Commerce.Catalog.ContentTypes;
 using EPiServer.Commerce.Marketing;
 using EPiServer.Core;
+using EPiServer.DataAbstraction;
 using EPiServer.Find;
 using EPiServer.Find.Cms;
+using EPiServer.Globalization;
 using EPiServer.ServiceLocation;
+using MyAlloySite.Cache;
 using MyAlloySite.Commerce.Products;
+using MyAlloySite.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +20,9 @@ namespace MyAlloySite.Extensions
     {
         private static readonly IPromotionEngine _promotionEngine = ServiceLocator.Current.GetInstance<IPromotionEngine>();
         private static readonly IContentLoader contentLoader = ServiceLocator.Current.GetInstance<IContentLoader>();
-        private static readonly IClient _client = ServiceLocator.Current.GetInstance<IClient>();
+        private static readonly IContentTypeRepository contentRepository = ServiceLocator.Current.GetInstance<IContentTypeRepository>();
+        private static readonly IEluxCache _eluxCache = ServiceLocator.Current.GetInstance<IEluxCache>();
+
         public static PromotionProductModel IndexPromotion(this CommonProducts product)
         {
             List<RewardDescription> promotions = GetListRewardDescription(product);
@@ -62,27 +68,42 @@ namespace MyAlloySite.Extensions
         {
             var result = new List<string>(); 
             var now = DateTime.UtcNow;
-            // neeed  cached
-            var campaigns = _client.Search<SalesCampaign>()
-                .Filter(s => !s.ValidFrom.GreaterThanNow() & s.ValidUntil.GreaterThanNow())
-                .GetContentResult();
+            var buildCacheKey = _eluxCache.BuildCacheKey(
+                new Dictionary<string, object>
+                {
+                    { "campaign", nameof(SalesCampaign)},
+                    { "language", ContentLanguage.PreferredCulture?.Name },
+                }, string.Empty, string.Empty);
+
+            var campaigns = _eluxCache.Get<List<SalesCampaign>>(buildCacheKey);
+
+            if(campaigns == null)
+            {
+                var contentModelUsage = ServiceLocator.Current.GetInstance<IContentModelUsage>();
+                var type = contentRepository.Load<SalesCampaign>();
+                var usages = contentModelUsage.ListContentOfContentType(type);
+                campaigns = usages.Select(x => contentLoader.Get<SalesCampaign>(x.ContentLink)).ToList();
+                _eluxCache.Add(buildCacheKey, campaigns, TimeSpan.FromHours(2), new[] { CacheMesterKeySpec.Categories.Campaign });
+            }
 
             foreach (var campaign in campaigns)
             {
                 //Get all promotion for each campaign
-                // neeed  cached
-                var promotions = _promotionEngine.GetPromotionItemsForCampaign(campaign.ContentLink);
+                var buildPromotionKey = _eluxCache.BuildCacheKey(
+                   new Dictionary<string, object>
+                   {
+                        { "campaign", campaign},
+                        { "promotion", nameof(PromotionItems)},
+                        { "language", ContentLanguage.PreferredCulture?.Name },
+                   }, string.Empty, string.Empty);
 
-                // try second way to get item affect by promotions
-
-                //var first = promotions.FirstOrDefault().Condition;
-                //var type = contentLoader.GetOriginalType();
-                //var ss = contentLoader.GetItems(first.Items, System.Globalization.CultureInfo.CurrentCulture);
+                var promotions = _eluxCache.Get<List<PromotionItems>>(buildCacheKey);
+                if (promotions == null)
+                {
+                    promotions = _promotionEngine.GetPromotionItemsForCampaign(campaign.ContentLink).ToList();
+                    _eluxCache.Add(buildCacheKey, promotions, TimeSpan.FromHours(2), new[] { CacheMesterKeySpec.Categories.Promotion });
+                }
                 
-                //var tmp = contentLoader.TryGet<ProductVariation>(first.Items.FirstOrDefault(), out var productVa1);
-                //var tmp1 = contentLoader.TryGet<TestCategory>(first.Items.ToList()[1], out var productVa2);
-
-                //Get promotions apply for this product
                 var appliedPromotions = GetListRewardDescription(product);
 
                 //Join 2 list to check if product is in this campaign to index campaign name
@@ -103,7 +124,6 @@ namespace MyAlloySite.Extensions
 
             foreach (var node in parentNodes)
             {
-                // neeed  cached
                 var category = contentLoader.Get<NodeContent>(node);
                 if(category != null)
                 {

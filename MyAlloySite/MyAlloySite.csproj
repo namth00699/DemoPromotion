@@ -445,6 +445,7 @@
     <Compile Include="Business\Rendering\TemplateCoordinator.cs" />
     <Compile Include="Business\ServiceLocatorDependencyResolver.cs" />
     <Compile Include="Business\UIDescriptors\ContainerPageUIDescriptor.cs" />
+    <Compile Include="Cache\CacheMesterKeySpec.cs" />
     <Compile Include="Commerce\Category\TestCategory.cs" />
     <Compile Include="Commerce\Products\CommonProducts.cs" />
     <Compile Include="Commerce\Variation\ProductVariation.cs" />
@@ -462,6 +463,7 @@
     <Compile Include="Controllers\StartPageController.cs" />
     <Compile Include="Controllers\VideoFileController.cs" />
     <Compile Include="DTO\ProductDTOModel.cs" />
+    <Compile Include="DTO\PromotionViewModel.cs" />
     <Compile Include="Extensions\CommonProductExtension.cs" />
     <Compile Include="Extensions\Model\CategoryIndexModel.cs" />
     <Compile Include="Extensions\Model\FilterMoneyModel.cs" />
@@ -529,6 +531,7 @@
     <Compile Include="Promotions\BuyItemsGetGiftsProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\IBuildQueryService.cs" />
+    <Compile Include="Service\IEluxCache.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>

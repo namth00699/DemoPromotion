@@ -23,16 +23,10 @@ namespace MyAlloySite.DTO
         public decimal Percent { get; set; }
     }
 
-    public class PromotionDTOModel : PaginationModel
+    public class ProductResponseModel
     {
-        public string CampaignName { get; set; }
+        public bool HasMore { get; set; }
 
-        public List<ProductDTOModel> Products { get; set; }
-
-        public List<ProductDTOModel> Categories { get; set; }
-
-        public List<SortModel> SortItems { get; set; }
-
-        public IPageViewModel<SitePageData> CurrentPage { get; set; }
+        public List<ProductDTOModel> ProductDTOModels { get; set; }
     }
 }
