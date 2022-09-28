@@ -26,6 +26,11 @@ namespace MyAlloySite.ViewModel
         public PromotionViewModel Create(PromotionPage currentPage, ProductRequestModel request)
         {
             var promotionModel = new PromotionViewModel(currentPage);
+            if (currentPage != null)
+            {
+                request.PageSize = currentPage.PageSize;
+                request.Campaign = currentPage != null ? _contentLoader.Get<SalesCampaign>(currentPage.Campaign).Name : string.Empty;
+            }
             var products = Search(currentPage, request);
 
             if (products != null)
@@ -33,7 +38,7 @@ namespace MyAlloySite.ViewModel
                 var convert = products as SearchResults<ProductDTOModel>;
                 promotionModel.Categories = GetFacets(convert);
                 promotionModel.Products = products.ToList();
-                promotionModel.CampaignName = currentPage != null ? _contentLoader.Get<SalesCampaign>(currentPage.Campaign).Name : string.Empty;
+                promotionModel.CampaignName = request.Campaign;
                 promotionModel.SortItems = _optionProvide.GetSortingOption();
                 promotionModel.Paging = new PaginationModel
                 {
@@ -57,10 +62,6 @@ namespace MyAlloySite.ViewModel
         private IEnumerable<ProductDTOModel> Search(PromotionPage currentPage, ProductRequestModel model)
         {
             var query = _client.Search<CommonProducts>();
-            if(currentPage != null)
-            {
-                model.PageSize = currentPage.PageSize;
-            }
 
             query = _buildQueryService.ApplyFilter(model, query, _client);
             query = _buildQueryService.ApplyFacet(query);

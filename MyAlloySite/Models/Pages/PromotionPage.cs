@@ -15,16 +15,7 @@ namespace MyAlloySite.Models.Pages
     [SiteImageUrl(Global.StaticGraphicsFolderPath + "page-type-thumbnail-article.png")]
     public class PromotionPage : StandardPage
     {
-        /*
-                [CultureSpecific]
-                [Display(
-                    Name = "Main body",
-                    Description = "The main body will be shown in the main content area of the page, using the XHTML-editor you can insert for example text, images and tables.",
-                    GroupName = SystemTabNames.Content,
-                    Order = 1)]
-                public virtual XhtmlString MainBody { get; set; }
-         */
-
+      
         [Display(
         Name = "Banner Image",
         GroupName = Global.TabNames.Banner,

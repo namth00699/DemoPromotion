@@ -1,8 +1,17 @@
-﻿
-@model List<MyAlloySite.DTO.ProductDTOModel>
-
-<div class="row">
-    <div class="span12 hidden-tablet hidden-phone">
-        @Html.PropertyFor(s => s.FirstOrDefault().Name)
-    </div>
+﻿@model List<MyAlloySite.DTO.ProductDTOModel>
+<div style="overflow:hidden; padding-left:100px ; margin-bottom:20px; border-bottom:solid">
+    <div><h3 class="" style="font-family:'Helvetica , sans-serif'">Menu</h3></div>
+    @foreach (var item in Model)
+    {
+        var imageUrl = (item.Image != null) ? Url.ContentUrl(item.Image) : "";
+        <a href="#" class="category-select" data-category-code="@item.Code" style="float: left; padding-bottom:20px">
+            <div style="text-align:center">
+                <div style="padding:30px">
+                    <img width="80" height="80" style="margin-left: auto; margin-right: auto; display:block;" src="@imageUrl"
+                         alt="@item.Name" />
+                    <span style="color: #011e41">@item.Name</span>
+                </div>
+            </div>
+        </a>
+    }
 </div>

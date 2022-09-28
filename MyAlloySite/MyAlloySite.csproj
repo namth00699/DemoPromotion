@@ -537,6 +537,7 @@
     <Compile Include="Service\ICategoryService.cs" />
     <Compile Include="Service\ICommonOptionProvideService.cs" />
     <Compile Include="Service\IEluxCache.cs" />
+    <Compile Include="Service\IPromotionHelpService.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModel\Promotion\IPromotionViewModelFactory.cs" />
     <Compile Include="ViewModel\Promotion\PromotionViewModelFactory.cs" />

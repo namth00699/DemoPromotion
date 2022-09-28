@@ -22,27 +22,5 @@ namespace MyAlloySite.Extensions
         public List<decimal> ListPercent { get; set; }
 
         public List<decimal> ListSavedAmount { get; set; }
-
-        public void SetOriginalValue()
-        {
-            SetOriginalPrice();
-            SetSavedAmount();
-            SetGreatestPercent();
-        }
-
-        private void SetOriginalPrice()
-        {
-            var actualPrice = ActualPrice != null ? ActualPrice : 0;
-            OriginalPrice = (decimal)(actualPrice + ListSavedAmount.Sum());
-        }
-
-        public void SetSavedAmount()
-        {
-            SavedAmount = OriginalPrice - ActualPrice;
-        }
-        public void SetGreatestPercent()
-        {
-            GreatestPercent = ListPercent != null && ListPercent.Any() ? ListPercent.Max() : 0;
-        }
     }
 }

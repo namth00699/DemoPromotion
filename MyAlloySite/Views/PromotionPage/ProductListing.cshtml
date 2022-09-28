@@ -4,19 +4,28 @@
     @foreach (var item in Model)
     {
         var imageUrl = (item.Image != null) ? Url.ContentUrl(item.Image) : "";
-        <div style="float: left; width : 33.33%; padding-bottom:50px">
-            <div style="text-align:center">
+        <div class="span4 container" style="text-align: left; word-wrap: break-word">
+            <div>
                 <div>
-                    <span>@item.Name</span>
-                    <span>@item.Code</span>
-                </div>
-                <div>
-                    <img width="400" height="500" style="margin-left: auto; margin-right: auto; display:block" src="@imageUrl"
+                    <img width="300" height="300" style="margin-left: auto; margin-right: auto; display:block" src="@imageUrl"
                          alt="@item.Name" />
                 </div>
-                <div>
-                    <span>@item.ActualPrice USD</span>
-                    <span style="padding-left: 50px; text-decoration: line-through;">@item.OriginalPrice USD</span>
+                <div style="padding-left:30px">
+                    <span class="row" style="font-size:15px">@item.Name</span>
+                    <span class="row" style="font-size:15px">@item.Code</span>
+                </div>
+                <div style="padding-left:30px">
+                    <span class="row">
+                        AutoDose for precise dosage, less wear and tear*.
+                        SensorWash with AI removes 49 different visible stains*.
+                        No more visible detergent residue with UltraMix*.
+                    </span>
+                </div>
+                <div style="padding-left: 30px; margin-top: 20px;">
+                    <h2>
+                        @item.ActualPrice USD
+                        <span class="pull-right" style=" text-decoration: line-through;">@item.OriginalPrice USD</span>
+                    </h2>
                 </div>
             </div>
         </div>

@@ -8,23 +8,22 @@
 </head>
 
 <div class="container">
-    <div class="campaign-wrapper">
+    @{Html.RenderPartial("Breadcrumbs", Model);}
+    <div class="campaign-wrapper" style="all:unset">
         @Html.PropertyFor(x => x.CurrentPage.MainContentArea, new { CssClass = "row equal-height", tag = Global.ContentAreaTags.FullWidth })
     </div>
-
     @*@Html.Partial("~/Views/Shared/CustomHeader.cshtml")*@
-    @{Html.RenderPartial("Breadcrumbs", Model);}
-    <div class="row">
+    @*<div class="row">
         @Html.Partial("~/Views/PromotionPage/CategoryListing.cshtml", Model.Categories)
-    </div>
+    </div>*@
     @if (Model.SortItems != null && Model.SortItems.Any())
     {
-        <div class="d-flex flex-row-reverse bd-highlight mx-auto">
+        <div class="pull-right" style="padding-bottom:25px">
             @Html.Partial("~/Views/PromotionPage/_Sorting.cshtml", Model.SortItems)
         </div>
     }
     <div class="row">
-        <div id="outer-containter-product" class="col-list">
+        <div id="outer-containter-product">
             @Html.Partial("~/Views/PromotionPage/ProductListing.cshtml", Model.Products)
         </div>
     </div>

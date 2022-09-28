@@ -4,7 +4,6 @@ using EPiServer.Commerce.Marketing;
 using EPiServer.Core;
 using EPiServer.DataAbstraction;
 using EPiServer.Find;
-using EPiServer.Find.Cms;
 using EPiServer.Globalization;
 using EPiServer.ServiceLocation;
 using MyAlloySite.Cache;
@@ -21,7 +20,8 @@ namespace MyAlloySite.Extensions
         private static readonly IPromotionEngine _promotionEngine = ServiceLocator.Current.GetInstance<IPromotionEngine>();
         private static readonly IContentLoader contentLoader = ServiceLocator.Current.GetInstance<IContentLoader>();
         private static readonly IContentTypeRepository contentRepository = ServiceLocator.Current.GetInstance<IContentTypeRepository>();
-        private static readonly IEluxCache _eluxCache = ServiceLocator.Current.GetInstance<IEluxCache>();
+        private static readonly IEluxCache _eluxCache = ServiceLocator.Current.GetInstance<IEluxCache>(); 
+        private static readonly IPromotionHelpService _promotionHelpService = ServiceLocator.Current.GetInstance<IPromotionHelpService>();
 
         public static PromotionProductModel IndexPromotion(this CommonProducts product)
         {
@@ -37,9 +37,8 @@ namespace MyAlloySite.Extensions
                 RewardType = promotions.Select(s => s.RewardType.ToString()).ToList(),
                 Status = promotions.Select(s => s.Status.ToString()).ToList(),
             };
-            promotionProductModel.SetOriginalValue();
 
-            return promotionProductModel;
+            return _promotionHelpService.SetOriginalValue(promotionProductModel);
         }
 
         private static List<RewardDescription> GetListRewardDescription(CommonProducts product)
@@ -97,11 +96,11 @@ namespace MyAlloySite.Extensions
                         { "language", ContentLanguage.PreferredCulture?.Name },
                    }, string.Empty, string.Empty);
 
-                var promotions = _eluxCache.Get<List<PromotionItems>>(buildCacheKey);
+                var promotions = _eluxCache.Get<List<PromotionItems>>(buildPromotionKey);
                 if (promotions == null)
                 {
                     promotions = _promotionEngine.GetPromotionItemsForCampaign(campaign.ContentLink).ToList();
-                    _eluxCache.Add(buildCacheKey, promotions, TimeSpan.FromHours(2), new[] { CacheMesterKeySpec.Categories.Promotion });
+                    _eluxCache.Add(buildPromotionKey, promotions, TimeSpan.FromHours(2), new[] { CacheMesterKeySpec.Categories.Promotion });
                 }
                 
                 var appliedPromotions = GetListRewardDescription(product);

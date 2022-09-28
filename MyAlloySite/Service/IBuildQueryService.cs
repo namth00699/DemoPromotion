@@ -30,6 +30,12 @@ namespace MyAlloySite.Service
             var dictionary = new Dictionary<string, Action>
             {
                 {
+                    GlobalValues.Default, () =>
+                    {
+                        query = query.OrderByDescending(s => s.IndexPromotion().GreatestPercent).OrderByDescending(s => s.IndexPromotion().ActualPrice);
+                    }
+                },
+                {
                     GlobalValues.NameAsc, () =>
                     {
                         query = query.OrderBy(s => s.DisplayName).ThenBy(s => s.Name);
@@ -75,6 +81,7 @@ namespace MyAlloySite.Service
             else
             {
                 query = query.OrderBy(s => s.DisplayName).ThenBy(s => s.Name);
+                result.Invoke();
             }
 
             return query;
