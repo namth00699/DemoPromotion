@@ -1,0 +1,8 @@
+﻿
+@model List<MyAlloySite.DTO.ProductDTOModel>
+
+<div class="row">
+    <div class="span12 hidden-tablet hidden-phone">
+        @Html.PropertyFor(s => s.FirstOrDefault().Name)
+    </div>
+</div>

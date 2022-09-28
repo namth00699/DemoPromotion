@@ -2,13 +2,17 @@
 @using System.Web.Optimization
 @model MyAlloySite.DTO.PromotionViewModel
 
-@{ Layout = "~/Views/Shared/Layouts/_CustomLayout.cshtml"; }
+@{ Layout = "~/Views/Shared/Layouts/_LeftNavigation.cshtml"; }
 <head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 
 <div class="container">
-    @Html.Partial("~/Views/Shared/CustomHeader.cshtml")
+    <div class="campaign-wrapper">
+        @Html.PropertyFor(x => x.CurrentPage.MainContentArea, new { CssClass = "row equal-height", tag = Global.ContentAreaTags.FullWidth })
+    </div>
+
+    @*@Html.Partial("~/Views/Shared/CustomHeader.cshtml")*@
     @{Html.RenderPartial("Breadcrumbs", Model);}
     <div class="row">
         @Html.Partial("~/Views/PromotionPage/CategoryListing.cshtml", Model.Categories)
