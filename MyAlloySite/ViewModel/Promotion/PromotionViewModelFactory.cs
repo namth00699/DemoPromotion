@@ -53,9 +53,8 @@ namespace MyAlloySite.ViewModel
 
         private List<ProductDTOModel> GetFacets(SearchResults<ProductDTOModel> products)
         {
-            var categories = _categoryService.GetAllDisplayCategory();
             var termCategories = products.Facets.FirstOrDefault() as TermsFacet;
-            var resultCategories = categories.Join(termCategories.Terms, a => a.Code, b => b.Term, (a, b) => a).ToList();
+            var resultCategories = termCategories.Terms.Select(s => new ProductDTOModel { Code = s.Term }).ToList();
             return resultCategories;
         }
 

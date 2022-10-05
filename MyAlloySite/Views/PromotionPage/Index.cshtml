@@ -10,12 +10,12 @@
 <div class="container">
     @{Html.RenderPartial("Breadcrumbs", Model);}
     <div class="campaign-wrapper" style="all:unset">
-        @Html.PropertyFor(x => x.CurrentPage.MainContentArea, new { CssClass = "row equal-height", tag = Global.ContentAreaTags.FullWidth })
+        @Html.PropertyFor(x => x.CurrentPage.MainContentArea, new { CssClass = "row equal-height", tag = Global.ContentAreaTags.FullWidth, Category = Model.Categories.Select(s => s.Code) })
     </div>
     @*@Html.Partial("~/Views/Shared/CustomHeader.cshtml")*@
     @*<div class="row">
-        @Html.Partial("~/Views/PromotionPage/CategoryListing.cshtml", Model.Categories)
-    </div>*@
+            @Html.Partial("~/Views/PromotionPage/CategoryListing.cshtml", Model.Categories)
+        </div>*@
     @if (Model.SortItems != null && Model.SortItems.Any())
     {
         <div class="pull-right" style="padding-bottom:25px">
@@ -34,6 +34,15 @@
     <input id="pageSize" type="hidden" value=@Model.CurrentPage.PageSize />
     <input id="category" type="hidden" />
     <input id="campaignName" type="hidden" value="@Model.CampaignName" />
+    <input id="listCategory" type="hidden" value="@Model.Categories" />
 </div>
-
+<script>
+    var list = @Html.Raw(Json.Encode(Model.Categories));
+    window.onload = $(function () {
+        for (var item in list) {
+            let tmp = $('*[data-customerID="' + item + '"]');
+            tmp.removeAttr("hidden");
+        }
+    })
+</script>
     @Scripts.Render("~/bundles/promotion")

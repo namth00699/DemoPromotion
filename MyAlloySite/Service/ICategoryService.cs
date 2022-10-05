@@ -7,6 +7,7 @@ using EPiServer.ServiceLocation;
 using MyAlloySite.Cache;
 using MyAlloySite.Commerce.Category;
 using MyAlloySite.DTO;
+using MyAlloySite.Models.Blocks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,8 @@ namespace MyAlloySite.Service
     interface ICategoryService
     {
         List<ProductDTOModel> GetAllDisplayCategory();
+
+        List<ProductDTOModel> GetDisplayCategory(object codes, CategoryBlock currentBlock);
     }
 
     [ServiceConfiguration(typeof(ICategoryService))]
@@ -25,6 +28,7 @@ namespace MyAlloySite.Service
     {
         private static readonly IEluxCache _eluxCache = ServiceLocator.Current.GetInstance<IEluxCache>();
         private readonly IClient _client = ServiceLocator.Current.GetInstance<IClient>();
+        private readonly IContentLoader _contentLoader = ServiceLocator.Current.GetInstance<IContentLoader>();
 
         public List<ProductDTOModel> GetAllDisplayCategory()
         {
@@ -49,6 +53,40 @@ namespace MyAlloySite.Service
                 _eluxCache.Add(buildCacheKey, categories, TimeSpan.FromHours(2), new[] { CacheMesterKeySpec.Categories.Campaign });
             }
             return items;
+        }
+
+        public List<ProductDTOModel> GetDisplayCategory(object codes, CategoryBlock currentBlock)
+        {
+            var list= new List<string>();
+            object[] canCast = codes as object[];
+            if (canCast != null)
+            {
+                list = canCast.OfType<string>().ToList();
+            }
+
+            var categories = _contentLoader.GetItems(currentBlock.Categories, ContentLanguage.PreferredCulture);
+            var results = new List<ProductDTOModel>();
+           
+            if (list == null || !list.Any())
+            {
+                foreach (var item in categories)
+                {
+                    var tmp = item as TestCategory;
+                    results.Add(new ProductDTOModel { Name = tmp.Name, Code = tmp.Code, Image = tmp.Image });
+                }
+            }
+            else
+            {
+                foreach (var item in categories)
+                {
+                    var tmp = item as TestCategory;
+                    if(list.Contains(tmp.Code))
+                    {
+                        results.Add(new ProductDTOModel { Name = tmp.Name, Code = tmp.Code, Image = tmp.Image });
+                    }
+                }
+            }
+            return results;
         }
     }
 }
