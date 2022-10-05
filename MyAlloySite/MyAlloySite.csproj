@@ -449,6 +449,11 @@
     <Compile Include="Commerce\Category\TestCategory.cs" />
     <Compile Include="Commerce\Products\CommonProducts.cs" />
     <Compile Include="Commerce\Variation\ProductVariation.cs" />
+    <Compile Include="Config\CommerceFacetConfigFactory.cs" />
+    <Compile Include="Config\EnumSelectionDescriptionAttribute.cs" />
+    <Compile Include="Config\IFacetConfigFactory.cs" />
+    <Compile Include="Config\SelectOneEnumAttribute.cs" />
+    <Compile Include="Constant\Constants.cs" />
     <Compile Include="Constant\GlobalValues.cs" />
     <Compile Include="Controllers\Blocks\CategoryBlockController.cs" />
     <Compile Include="Controllers\ContactBlockController.cs" />
@@ -471,6 +476,12 @@
     <Compile Include="Extensions\Model\PromotionProductModel.cs" />
     <Compile Include="Extensions\SortingExtension.cs" />
     <Compile Include="Extensions\VariationContentExtension.cs" />
+    <Compile Include="Facets\FacetDefinition.cs" />
+    <Compile Include="Facets\FacetGroupOption.cs" />
+    <Compile Include="Facets\FacetOption.cs" />
+    <Compile Include="Facets\FacetStringDefinition.cs" />
+    <Compile Include="Facets\ISelectable.cs" />
+    <Compile Include="Facets\SelectableNumericRange.cs" />
     <Compile Include="Find\CommerceFindConvention.cs" />
     <Compile Include="Find\ContentClientConventions.cs" />
     <Compile Include="Global.asax.cs">
@@ -495,6 +506,7 @@
     <Compile Include="Models\Blocks\SiteBlockData.cs" />
     <Compile Include="Models\Blocks\SiteLogotypeBlock.cs" />
     <Compile Include="Models\Blocks\TeaserBlock.cs" />
+    <Compile Include="Models\FacetFilterConfigurationItem.cs" />
     <Compile Include="Models\Media\GenericMedia.cs" />
     <Compile Include="Models\Media\ImageFile.cs" />
     <Compile Include="Models\Media\VideoFile.cs" />
@@ -537,6 +549,7 @@
     <Compile Include="Service\ICategoryService.cs" />
     <Compile Include="Service\ICommonOptionProvideService.cs" />
     <Compile Include="Service\IEluxCache.cs" />
+    <Compile Include="Service\IFacetConfiguration.cs" />
     <Compile Include="Service\IPromotionHelpService.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModel\Promotion\IPromotionViewModelFactory.cs" />
