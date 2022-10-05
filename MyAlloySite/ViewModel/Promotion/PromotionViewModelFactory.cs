@@ -64,7 +64,6 @@ namespace MyAlloySite.ViewModel
 
             query = _buildQueryService.ApplyFilter(model, query, _client);
             query = _buildQueryService.ApplyFacet(query);
-            query = _buildQueryService.ApplyFilter(model, query, _client);
             query = _buildQueryService.ApplySorting(model.Sort, query);
             query = _buildQueryService.SetPageSize(query, model.PageSize, model.PageIndex);
 
