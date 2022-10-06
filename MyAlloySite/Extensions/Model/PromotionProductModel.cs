@@ -22,5 +22,7 @@ namespace MyAlloySite.Extensions
         public List<decimal> ListPercent { get; set; }
 
         public List<decimal> ListSavedAmount { get; set; }
+
+        public List<int> PromotionType { get; set; }
     }
 }

@@ -1,17 +1,37 @@
-﻿using EPiServer.ServiceLocation;
+﻿using EPiServer.Commerce.Marketing;
+using EPiServer.ServiceLocation;
 using MyAlloySite.Extensions;
+using MyAlloySite.Promotions;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace MyAlloySite.Service
 {
     interface IPromotionHelpService
     {
+        List<int> GetListPromotionType(List<RewardDescription> promotions);
+
         PromotionProductModel SetOriginalValue(PromotionProductModel model);
     }
 
     [ServiceConfiguration(typeof(IPromotionHelpService))]
     public class PromotionHelpService : IPromotionHelpService
     {
+        public List<int> GetListPromotionType(List<RewardDescription> promotions)
+        {
+            var results = new HashSet<int>();
+            foreach (var item in promotions)
+            {
+                if (item is BuyItemsGetGifts)
+                {
+                    results.Add((int)Constant.Constants.PromotionType.BuyItemsGetGifts);
+                }
+                else
+                    results.Add((int)Constant.Constants.PromotionType.SaleOff);
+            }
+            return results.ToList();
+        }
+
         public PromotionProductModel SetOriginalValue(PromotionProductModel model)
         {
             SetOriginalPrice(model);

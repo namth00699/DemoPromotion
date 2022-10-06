@@ -1,0 +1,18 @@
+﻿@model List<MyAlloySite.DTO.FilterModel>
+<div class="control-group">
+    @foreach (var item in Model)
+    {
+        <div class="row">
+            <h3>@item.DisplayName</h3>
+        </div>
+        foreach (var option in item.Options)
+        {
+            <div class="d-flex">
+                <label>
+                    <input style="margin-bottom:2px" type="checkbox" data-input-type="@option.FilterType" data-input-key="@option.Key" data-input-value="@option.Value" />
+                    <span>@option.Key</span>
+                </label>
+            </div>
+        }
+    }
+</div>

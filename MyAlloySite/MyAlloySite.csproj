@@ -449,6 +449,7 @@
     <Compile Include="Commerce\Category\TestCategory.cs" />
     <Compile Include="Commerce\Products\CommonProducts.cs" />
     <Compile Include="Commerce\Variation\ProductVariation.cs" />
+    <Compile Include="Constant\Constants.cs" />
     <Compile Include="Constant\GlobalValues.cs" />
     <Compile Include="Controllers\Blocks\CategoryBlockController.cs" />
     <Compile Include="Controllers\ContactBlockController.cs" />
@@ -463,6 +464,8 @@
     <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controllers\StartPageController.cs" />
     <Compile Include="Controllers\VideoFileController.cs" />
+    <Compile Include="DTO\FilterModel.cs" />
+    <Compile Include="DTO\OptionModel.cs" />
     <Compile Include="DTO\ProductDTOModel.cs" />
     <Compile Include="DTO\PromotionViewModel.cs" />
     <Compile Include="Extensions\CommonProductExtension.cs" />
@@ -742,6 +745,7 @@
     <Content Include="Views\Shared\Blocks\FullImageBlock.cshtml" />
     <Content Include="Views\Shared\Blocks\CategoryBlock.cshtml" />
     <Content Include="Views\CategoryBlock\Index.cshtml" />
+    <Content Include="Views\PromotionPage\_Filter.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

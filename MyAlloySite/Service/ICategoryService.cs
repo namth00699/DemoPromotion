@@ -9,6 +9,7 @@ using MyAlloySite.Commerce.Category;
 using MyAlloySite.DTO;
 using MyAlloySite.Models.Blocks;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -58,7 +59,8 @@ namespace MyAlloySite.Service
         public List<ProductDTOModel> GetDisplayCategory(object codes, CategoryBlock currentBlock)
         {
             var list= new List<string>();
-            object[] canCast = codes as object[];
+            var canCast = ((IEnumerable)codes).Cast<object>()
+                                   .Select(x => x == null ? x : x.ToString());
             if (canCast != null)
             {
                 list = canCast.OfType<string>().ToList();

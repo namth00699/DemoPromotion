@@ -8,6 +8,7 @@ using EPiServer.Globalization;
 using EPiServer.ServiceLocation;
 using MyAlloySite.Cache;
 using MyAlloySite.Commerce.Products;
+using MyAlloySite.Promotions;
 using MyAlloySite.Service;
 using System;
 using System.Collections.Generic;
@@ -29,17 +30,20 @@ namespace MyAlloySite.Extensions
 
             var promotionProductModel = new PromotionProductModel()
             {
-                ActualPrice = (decimal)(promotions?.FirstOrDefault()?.Redemptions?.FirstOrDefault()?.AffectedEntries?.PriceEntries?.FirstOrDefault()?.ActualTotal != null 
+                ActualPrice = (decimal)(promotions?.FirstOrDefault()?.Redemptions?.FirstOrDefault()?.AffectedEntries?.PriceEntries?.FirstOrDefault()?.ActualTotal != null
                     ? promotions?.FirstOrDefault()?.Redemptions?.FirstOrDefault()?.AffectedEntries?.PriceEntries?.FirstOrDefault()?.ActualTotal : 0),
                 ListSavedAmount = promotions.Select(s => s.SavedAmount).ToList(),
                 Currency = promotions?.FirstOrDefault()?.Redemptions?.FirstOrDefault()?.AffectedEntries?.PriceEntries?.FirstOrDefault()?.Currency,
                 ListPercent = promotions.Select(s => s.Percentage).ToList(),
                 RewardType = promotions.Select(s => s.RewardType.ToString()).ToList(),
                 Status = promotions.Select(s => s.Status.ToString()).ToList(),
+                PromotionType = _promotionHelpService.GetListPromotionType(promotions)
             };
 
             return _promotionHelpService.SetOriginalValue(promotionProductModel);
         }
+
+       
 
         private static List<RewardDescription> GetListRewardDescription(CommonProducts product)
         {

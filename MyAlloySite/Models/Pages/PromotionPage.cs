@@ -32,6 +32,22 @@ namespace MyAlloySite.Models.Pages
         public virtual ContentReference Campaign { get; set; }
 
         [Display(
+           Name = "Display Filter Promotion Type",
+           Description = "",
+           GroupName = Global.TabNames.Filter,
+           Order = 30)]
+        [CultureSpecific]
+        public virtual bool DisplayFilterPromotionType { get; set; }
+
+        [Display(
+           Name = "Display Filter Promotion Type",
+           Description = "",
+           GroupName = Global.TabNames.Filter,
+           Order = 30)]
+        [CultureSpecific]
+        public virtual bool DisplayFilterPrice { get; set; }
+
+        [Display(
            Name = "Setting Filter Price",
            Description = "",
            GroupName = Global.TabNames.Filter,

@@ -9,6 +9,7 @@ using MyAlloySite.DTO;
 using MyAlloySite.Extensions;
 using MyAlloySite.Models.Pages;
 using MyAlloySite.Service;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -36,6 +37,7 @@ namespace MyAlloySite.ViewModel
             if (products != null)
             {
                 var convert = products as SearchResults<ProductDTOModel>;
+                promotionModel.Filters = GetFilters(currentPage);
                 promotionModel.Categories = GetFacets(convert);
                 promotionModel.Products = products.ToList();
                 promotionModel.CampaignName = request.Campaign;
@@ -51,6 +53,62 @@ namespace MyAlloySite.ViewModel
             return promotionModel;
         }
 
+        private List<FilterModel> GetFilters(PromotionPage currentPage)
+        {
+            var results = new List<FilterModel>();
+            if (currentPage == null)
+            {
+                return results;
+            }
+
+            if(currentPage.DisplayFilterPromotionType)
+            {
+                SetUpFilterPromotion(currentPage, results);
+            }
+
+            //if(currentPage.DisplayFilterPrice && currentPage.FilterPrice != null && currentPage.FilterPrice.Any())
+            //{
+            //    var filter = new FilterModel
+            //    {
+            //        Name = nameof(currentPage.DisplayFilterPrice),
+            //        DisplayName = "Price Range"
+            //    };
+            //    foreach (var item in currentPage.FilterPrice)
+            //    {
+            //        var option = new OptionModel
+            //        {
+            //            Key = item.Lower.ToString(),
+            //            Value = item.Upper.ToString()
+            //        };
+            //    }
+            //}
+
+            return results;
+        }
+
+        private void SetUpFilterPromotion(PromotionPage currentPage, List<FilterModel> results)
+        {
+            var filter = new FilterModel
+            {
+                Name = nameof(currentPage.DisplayFilterPromotionType),
+                DisplayName = "Promotion Type"
+            };
+
+            var options = new List<OptionModel>();
+            foreach (var item in Constant.Constants.PromotionTypeDic)
+            {
+                var option = new OptionModel
+                {
+                    Key = item.Value,
+                    Value = item.Key.ToString()
+                };
+                options.Add(option);
+            }
+
+            filter.Options = options;
+            results.Add(filter);
+        }
+
         private List<ProductDTOModel> GetFacets(SearchResults<ProductDTOModel> products)
         {
             var termCategories = products.Facets.FirstOrDefault() as TermsFacet;
@@ -64,7 +122,6 @@ namespace MyAlloySite.ViewModel
 
             query = _buildQueryService.ApplyFilter(model, query, _client);
             query = _buildQueryService.ApplyFacet(query);
-            query = _buildQueryService.ApplyFilter(model, query, _client);
             query = _buildQueryService.ApplySorting(model.Sort, query);
             query = _buildQueryService.SetPageSize(query, model.PageSize, model.PageIndex);
 

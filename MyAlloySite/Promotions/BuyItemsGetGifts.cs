@@ -4,27 +4,32 @@ using EPiServer.Core;
 using EPiServer.DataAnnotations;
 using MyAlloySite.Commerce.Category;
 using MyAlloySite.Commerce.Products;
+using MyAlloySite.Commerce.Variation;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace MyAlloySite.Promotions
 {
-    [ContentType(GUID = "76EBFEFF-2CFB-42F2-B4A3-EA5EA5A41515")]
+    [ContentType(DisplayName = "Buy Items Get A Free Gift",
+       GUID = "ddcf4c92-1c6b-4bca-8c0f-bd1b84a3cf4c",
+       Description = "Product B needs to be installed and bonus product C",
+       GroupName = "Promotions")]
     public class BuyItemsGetGifts : EntryPromotion
     {
         [PromotionRegion("Condition")]
         [Display(Name = "Required of Buy Items", Order = 10)]
-        [AllowedTypes(typeof(TestCategory))]
-        public virtual IList<ContentReference> BuyItems { get; set; }
-
-        [PromotionRegion("Condition")]
-        [Display(Name = "Received Item", Order = 10)]
-        [AllowedTypes(typeof(CommonProducts))]
-        public virtual IList<ContentReference> Gifts { get; set; }
-
-        [PromotionRegion("Condition")]
-        [Display(Name = "Required of Buy Items", Order = 10)]
         [Range(1, 99)]
         public virtual int RequiredQuantity { get; set; }
+
+        [DistinctList]
+        [PromotionRegion("Condition")]
+        [AllowedTypes(typeof(ProductVariation))]
+        [Display(Name = "Qualifying Items", Order = 15)]
+        public virtual IList<ContentReference> Items { get; set; }
+
+        [PromotionRegion("Reward")]
+        [AllowedTypes(typeof(ProductVariation))]
+        [Display(Name = "Gift Item(s)", Order = 20)]
+        public virtual IList<ContentReference> GiftItems { get; set; }
     }
 }

@@ -15,6 +15,8 @@ namespace MyAlloySite.DTO
 
         public string CampaignName { get; set; }
 
+        public List<FilterModel> Filters { get; set; }
+
         public List<ProductDTOModel> Products { get; set; }
 
         public List<ProductDTOModel> Categories { get; set; }
