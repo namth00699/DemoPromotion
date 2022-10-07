@@ -6,6 +6,8 @@ using EPiServer.DataAbstraction;
 using EPiServer.Find;
 using EPiServer.Globalization;
 using EPiServer.ServiceLocation;
+using Mediachase.Commerce.Catalog;
+using Mediachase.Commerce.Pricing;
 using MyAlloySite.Cache;
 using MyAlloySite.Commerce.Products;
 using MyAlloySite.Promotions;
@@ -21,29 +23,54 @@ namespace MyAlloySite.Extensions
         private static readonly IPromotionEngine _promotionEngine = ServiceLocator.Current.GetInstance<IPromotionEngine>();
         private static readonly IContentLoader contentLoader = ServiceLocator.Current.GetInstance<IContentLoader>();
         private static readonly IContentTypeRepository contentRepository = ServiceLocator.Current.GetInstance<IContentTypeRepository>();
-        private static readonly IEluxCache _eluxCache = ServiceLocator.Current.GetInstance<IEluxCache>(); 
+        private static readonly IEluxCache _eluxCache = ServiceLocator.Current.GetInstance<IEluxCache>();
         private static readonly IPromotionHelpService _promotionHelpService = ServiceLocator.Current.GetInstance<IPromotionHelpService>();
+        private static readonly IPriceService _priceService = ServiceLocator.Current.GetInstance<IPriceService>();
 
         public static PromotionProductModel IndexPromotion(this CommonProducts product)
         {
+            PromotionProductModel promotionProductModel;
             List<RewardDescription> promotions = GetListRewardDescription(product);
 
-            var promotionProductModel = new PromotionProductModel()
+            // Check case if only Buy Item Get Gifts promotion apply to product
+            if (promotions != null && promotions.Count == 1 && promotions.FirstOrDefault().Promotion is BuyItemsGetGifts)
             {
-                ActualPrice = (decimal)(promotions?.FirstOrDefault()?.Redemptions?.FirstOrDefault()?.AffectedEntries?.PriceEntries?.FirstOrDefault()?.ActualTotal != null
+                var variants = contentLoader.GetItems(product.GetVariants(), product.Language).Cast<VariationContent>().ToArray();
+                var price = _priceService.GetPrices(Mediachase.Commerce.MarketId.Default, 
+                    DateTime.UtcNow,
+                    variants.Select(x => new CatalogKey(x.Code)), 
+                    new PriceFilter { CustomerPricing = new CustomerPricing[] { CustomerPricing.AllCustomers } });
+
+                promotionProductModel = new PromotionProductModel()
+                {
+                    ActualPrice = price.FirstOrDefault().UnitPrice.Amount,
+                    ListSavedAmount = promotions.Select(s => s.SavedAmount).ToList(),
+                    Currency = price.FirstOrDefault().UnitPrice.Currency,
+                    ListPercent = promotions.Select(s => s.Percentage).ToList(),
+                    RewardType = promotions.Select(s => s.RewardType.ToString()).ToList(),
+                    Status = promotions.Select(s => s.Status.ToString()).ToList(),
+                    PromotionType = _promotionHelpService.GetListPromotionType(promotions)
+                };
+            }
+            else
+            {
+                promotionProductModel = new PromotionProductModel()
+                {
+                    ActualPrice = (decimal)(promotions?.FirstOrDefault()?.Redemptions?.FirstOrDefault()?.AffectedEntries?.PriceEntries?.FirstOrDefault()?.ActualTotal != null
                     ? promotions?.FirstOrDefault()?.Redemptions?.FirstOrDefault()?.AffectedEntries?.PriceEntries?.FirstOrDefault()?.ActualTotal : 0),
-                ListSavedAmount = promotions.Select(s => s.SavedAmount).ToList(),
-                Currency = promotions?.FirstOrDefault()?.Redemptions?.FirstOrDefault()?.AffectedEntries?.PriceEntries?.FirstOrDefault()?.Currency,
-                ListPercent = promotions.Select(s => s.Percentage).ToList(),
-                RewardType = promotions.Select(s => s.RewardType.ToString()).ToList(),
-                Status = promotions.Select(s => s.Status.ToString()).ToList(),
-                PromotionType = _promotionHelpService.GetListPromotionType(promotions)
-            };
+                    ListSavedAmount = promotions.Select(s => s.SavedAmount).ToList(),
+                    Currency = promotions?.FirstOrDefault()?.Redemptions?.FirstOrDefault()?.AffectedEntries?.PriceEntries?.FirstOrDefault()?.Currency,
+                    ListPercent = promotions.Select(s => s.Percentage).ToList(),
+                    RewardType = promotions.Select(s => s.RewardType.ToString()).ToList(),
+                    Status = promotions.Select(s => s.Status.ToString()).ToList(),
+                    PromotionType = _promotionHelpService.GetListPromotionType(promotions)
+                };
+            }
 
             return _promotionHelpService.SetOriginalValue(promotionProductModel);
         }
 
-       
+
 
         private static List<RewardDescription> GetListRewardDescription(CommonProducts product)
         {
@@ -69,7 +96,7 @@ namespace MyAlloySite.Extensions
 
         public static List<string> IndexCampaignProduct(this CommonProducts product)
         {
-            var result = new List<string>(); 
+            var result = new List<string>();
             var now = DateTime.UtcNow;
             var buildCacheKey = _eluxCache.BuildCacheKey(
                 new Dictionary<string, object>
@@ -80,7 +107,7 @@ namespace MyAlloySite.Extensions
 
             var campaigns = _eluxCache.Get<List<SalesCampaign>>(buildCacheKey);
 
-            if(campaigns == null)
+            if (campaigns == null)
             {
                 var contentModelUsage = ServiceLocator.Current.GetInstance<IContentModelUsage>();
                 var type = contentRepository.Load<SalesCampaign>();
@@ -106,19 +133,19 @@ namespace MyAlloySite.Extensions
                     promotions = _promotionEngine.GetPromotionItemsForCampaign(campaign.ContentLink).ToList();
                     _eluxCache.Add(buildPromotionKey, promotions, TimeSpan.FromHours(2), new[] { CacheMesterKeySpec.Categories.Promotion });
                 }
-                
+
                 var appliedPromotions = GetListRewardDescription(product);
 
                 //Join 2 list to check if product is in this campaign to index campaign name
                 var results = promotions.Join(appliedPromotions, a => a.Promotion.ContentLink, b => b.Promotion.ContentLink, (a, b) => a);
-                if(results.Any())
+                if (results.Any())
                 {
                     result.Add(campaign.Name);
                 }
             }
             return result;
         }
-      
+
         public static string IndexCategoriesProduct(this CommonProducts product)
         {
             var result = new List<string>();
@@ -128,7 +155,7 @@ namespace MyAlloySite.Extensions
             foreach (var node in parentNodes)
             {
                 var category = contentLoader.Get<NodeContent>(node);
-                if(category != null)
+                if (category != null)
                 {
                     return category.Code;
                 }
