@@ -12,5 +12,7 @@ namespace MyAlloySite.DTO
         public string FilterAttribute { get; set; }
 
         public string DisplayOption { get; set; }
+
+        public bool Disable { get; set; }
     }
 }

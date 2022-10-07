@@ -1,6 +1,5 @@
 ﻿using EPiServer.Find;
 using EPiServer.ServiceLocation;
-using LinqKit;
 using MyAlloySite.Api;
 using MyAlloySite.Commerce.Products;
 using MyAlloySite.Constant;
@@ -21,7 +20,7 @@ namespace MyAlloySite.Service
 
         ITypeSearch<CommonProducts> ApplyFilter(ProductRequestModel request, ITypeSearch<CommonProducts> query, IClient _client);
 
-        ITypeSearch<CommonProducts> ApplyFacet(ITypeSearch<CommonProducts> query);
+        ITypeSearch<CommonProducts> ApplyFacet(ITypeSearch<CommonProducts> query, PromotionPage promotionPage);
     }
 
     [ServiceConfiguration(ServiceType = typeof(IBuildQueryService))]
@@ -142,9 +141,16 @@ namespace MyAlloySite.Service
             return filterProduct;
         }
 
-        public ITypeSearch<CommonProducts> ApplyFacet(ITypeSearch<CommonProducts> query)
+        public ITypeSearch<CommonProducts> ApplyFacet(ITypeSearch<CommonProducts> query, PromotionPage promotion)
         {
             query = query.TermsFacetFor(s => s.IndexCategoriesProduct());
+            if(promotion != null && promotion.DisplayFilterPromotionType)
+            {
+                query = query.FilterFacet(Constants.PromotionType.BuyItemsGetGifts.ToString(),
+                    s => s.IndexPromotion().PromotionType.Match((int)Constants.PromotionType.BuyItemsGetGifts));
+                query = query.FilterFacet(Constants.PromotionType.SaleOff.ToString(),
+                    s => s.IndexPromotion().PromotionType.Match((int)Constants.PromotionType.SaleOff));
+            }
             return query;
         }
     }

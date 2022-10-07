@@ -40,7 +40,7 @@ namespace MyAlloySite.Models.Pages
         public virtual bool DisplayFilterPromotionType { get; set; }
 
         [Display(
-           Name = "Display Filter Promotion Type",
+           Name = "Display Filter Price",
            Description = "",
            GroupName = Global.TabNames.Filter,
            Order = 30)]

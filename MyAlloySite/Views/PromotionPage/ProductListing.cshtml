@@ -4,7 +4,7 @@
     @foreach (var item in Model)
     {
         var imageUrl = (item.Image != null) ? Url.ContentUrl(item.Image) : "";
-    <div class="span3 container" style="text-align: left; word-wrap: break-word; border-bottom:groove; border-top:groove; margin-left:0px">
+    <div class="span3 container" style="text-align: left; word-wrap: break-word; border-bottom:groove; margin-left:0px">
         <div>
             <div>
                 <img width="200" height="200" style="margin-left: auto; margin-right: auto; display:block" src="@imageUrl"

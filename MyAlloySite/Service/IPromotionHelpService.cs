@@ -1,4 +1,5 @@
 ﻿using EPiServer.Commerce.Marketing;
+using EPiServer.Commerce.Marketing.Promotions;
 using EPiServer.ServiceLocation;
 using MyAlloySite.Extensions;
 using MyAlloySite.Promotions;
@@ -22,12 +23,14 @@ namespace MyAlloySite.Service
             var results = new HashSet<int>();
             foreach (var item in promotions)
             {
-                if (item is BuyItemsGetGifts)
+                if (item.Promotion is BuyItemsGetGifts)
                 {
                     results.Add((int)Constant.Constants.PromotionType.BuyItemsGetGifts);
                 }
-                else
+                if (item.Promotion is BuyFromCategoryGetItemDiscount)
+                {
                     results.Add((int)Constant.Constants.PromotionType.SaleOff);
+                }
             }
             return results.ToList();
         }

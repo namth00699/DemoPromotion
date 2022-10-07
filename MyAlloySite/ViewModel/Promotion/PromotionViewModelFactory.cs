@@ -38,7 +38,7 @@ namespace MyAlloySite.ViewModel
             if (products != null)
             {
                 var convert = products as SearchResults<ProductDTOModel>;
-                promotionModel.Filters = GetFilters(currentPage);
+                promotionModel.Filters = GetFilters(currentPage, convert);
                 promotionModel.Categories = GetFacets(convert);
                 promotionModel.Products = products.ToList();
                 promotionModel.CampaignName = request.Campaign;
@@ -54,7 +54,7 @@ namespace MyAlloySite.ViewModel
             return promotionModel;
         }
 
-        private List<FilterModel> GetFilters(PromotionPage currentPage)
+        private List<FilterModel> GetFilters(PromotionPage currentPage, SearchResults<ProductDTOModel> products)
         {
             var results = new List<FilterModel>();
             if (currentPage == null)
@@ -64,30 +64,13 @@ namespace MyAlloySite.ViewModel
 
             if(currentPage.DisplayFilterPromotionType)
             {
-                SetUpFilterPromotion(currentPage, results);
+                SetUpFilterPromotion(currentPage, results, products);
             }
-
-            //if(currentPage.DisplayFilterPrice && currentPage.FilterPrice != null && currentPage.FilterPrice.Any())
-            //{
-            //    var filter = new FilterModel
-            //    {
-            //        Name = nameof(currentPage.DisplayFilterPrice),
-            //        DisplayName = "Price Range"
-            //    };
-            //    foreach (var item in currentPage.FilterPrice)
-            //    {
-            //        var option = new OptionModel
-            //        {
-            //            Key = item.Lower.ToString(),
-            //            Value = item.Upper.ToString()
-            //        };
-            //    }
-            //}
 
             return results;
         }
 
-        private void SetUpFilterPromotion(PromotionPage currentPage, List<FilterModel> results)
+        private void SetUpFilterPromotion(PromotionPage currentPage, List<FilterModel> results, SearchResults<ProductDTOModel> products)
         {
             var filter = new FilterModel
             {
@@ -98,11 +81,14 @@ namespace MyAlloySite.ViewModel
             var options = new List<OptionModel>();
             foreach (var item in Constant.Constants.PromotionTypeDic)
             {
+                var key = ((PromotionType)item.Key).ToString();
+                var facet = products.Facets.FirstOrDefault(s => s.Name == key) as FilterFacet;
                 var option = new OptionModel
                 {
                     DisplayOption = item.Value,
                     FilterType = (int)FilterType.PromotionType,
                     FilterAttribute = item.Key.ToString(),
+                    Disable = facet != null && facet.Count > 0 ? false : true
                 };
                 options.Add(option);
             }
@@ -113,7 +99,7 @@ namespace MyAlloySite.ViewModel
 
         private List<ProductDTOModel> GetFacets(SearchResults<ProductDTOModel> products)
         {
-            var termCategories = products.Facets.FirstOrDefault() as TermsFacet;
+            var termCategories = products.Facets.FirstOrDefault(s => s.Name == Constant.Constants.IndexCategoriesProduct) as TermsFacet;
             var resultCategories = termCategories.Terms.Select(s => new ProductDTOModel { Code = s.Term }).ToList();
             return resultCategories;
         }
@@ -123,7 +109,7 @@ namespace MyAlloySite.ViewModel
             var query = _client.Search<CommonProducts>();
 
             query = _buildQueryService.ApplyFilter(model, query, _client);
-            query = _buildQueryService.ApplyFacet(query);
+            query = _buildQueryService.ApplyFacet(query, currentPage);
             query = _buildQueryService.ApplySorting(model.Sort, query);
             query = _buildQueryService.SetPageSize(query, model.PageSize, model.PageIndex);
 

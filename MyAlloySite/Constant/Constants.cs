@@ -4,6 +4,8 @@ namespace MyAlloySite.Constant
 {
     public class Constants
     {
+        public const string IndexCategoriesProduct = "IndexCategoriesProduct";
+
         public enum FilterType
         {
             PromotionType = 1,
