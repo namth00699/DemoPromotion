@@ -4,6 +4,12 @@ namespace MyAlloySite.Constant
 {
     public class Constants
     {
+        public enum FilterType
+        {
+            PromotionType = 1,
+            PriceType = 2
+        }
+
         public enum PromotionType
         {
             BuyItemsGetGifts = 1,
@@ -15,8 +21,7 @@ namespace MyAlloySite.Constant
             Term,
             Filter,
             Range
-            //Double = 24,
-            //Integer = 25,
+           
         }
 
         public static Dictionary<int, string> PromotionTypeDic = new Dictionary<int, string>

@@ -1,33 +1,33 @@
 ﻿@model List<MyAlloySite.DTO.ProductDTOModel>
 
-@*<div class="product-containter">*@
+<div class="product-containter">
     @foreach (var item in Model)
     {
         var imageUrl = (item.Image != null) ? Url.ContentUrl(item.Image) : "";
-        <div class="span3 container" style="text-align: left; word-wrap: break-word; border-bottom:groove; border-top:groove">
+    <div class="span3 container" style="text-align: left; word-wrap: break-word; border-bottom:groove; border-top:groove; margin-left:0px">
+        <div>
             <div>
-                <div>
-                    <img width="200" height="200" style="margin-left: auto; margin-right: auto; display:block" src="@imageUrl"
-                         alt="@item.Name" />
-                </div>
-                <div style="padding-left:30px">
-                    <span class="row" style="font-size:15px">@item.Name</span>
-                    <span class="row" style="font-size:15px">@item.Code</span>
-                </div>
-                <div style="padding-left:30px">
-                    <span class="row">
-                        AutoDose for precise dosage, less wear and tear*.
-                        SensorWash with AI removes 49 different visible stains*.
-                        No more visible detergent residue with UltraMix*.
-                    </span>
-                </div>
-                <div style="padding-left: 30px; margin-top: 20px;">
-                    <h3>
-                        @item.ActualPrice USD
-                        <span class="pull-right" style=" text-decoration: line-through;">@item.OriginalPrice USD</span>
-                    </h3>
-                </div>
+                <img width="200" height="200" style="margin-left: auto; margin-right: auto; display:block" src="@imageUrl"
+                     alt="@item.Name" />
+            </div>
+            <div style="padding-left:30px">
+                <span class="row" style="font-size:15px">@item.Name</span>
+                <span class="row" style="font-size:15px">@item.Code</span>
+            </div>
+            <div style="padding-left:30px">
+                <span class="row">
+                    AutoDose for precise dosage, less wear and tear*.
+                    SensorWash with AI removes 49 different visible stains*.
+                    No more visible detergent residue with UltraMix*.
+                </span>
+            </div>
+            <div style="padding-left: 30px; margin-top: 20px;">
+                <h3>
+                    @item.ActualPrice USD
+                    <span class="pull-right" style=" text-decoration: line-through;">@item.OriginalPrice USD</span>
+                </h3>
             </div>
         </div>
+    </div>
     }
-@*</div>*@
+</div>

@@ -12,6 +12,7 @@ using MyAlloySite.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static MyAlloySite.Constant.Constants;
 
 namespace MyAlloySite.ViewModel
 {
@@ -99,8 +100,9 @@ namespace MyAlloySite.ViewModel
             {
                 var option = new OptionModel
                 {
-                    Key = item.Value,
-                    Value = item.Key.ToString()
+                    DisplayOption = item.Value,
+                    FilterType = (int)FilterType.PromotionType,
+                    FilterAttribute = item.Key.ToString(),
                 };
                 options.Add(option);
             }

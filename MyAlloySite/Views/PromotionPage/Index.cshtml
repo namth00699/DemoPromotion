@@ -25,12 +25,14 @@
         <div class="span3">
             @Html.Partial("~/Views/PromotionPage/_Filter.cshtml", Model.Filters)
         </div>
-        <div id="outer-containter-product">
-            @Html.Partial("~/Views/PromotionPage/ProductListing.cshtml", Model.Products)
+        <div class="span9">
+            <div id="outer-containter-product">
+                @Html.Partial("~/Views/PromotionPage/ProductListing.cshtml", Model.Products)
+            </div>
+            <div id="btn_showMore" class="row" style="clear:both; display:flex; justify-content:center">
+                <button style="background-color: #333; color:aliceblue; width: 250px; padding: 15px 32px; " type="button" class="btn-primary" id="showMore">Show more</button>
+            </div>
         </div>
-    </div>
-    <div class="row" style="clear:both; display:flex; justify-content:center">
-        <button style="background-color: #333; color:aliceblue; width: 250px; padding: 15px 32px; " type="button" class="btn-primary" id="showMore">Show more</button>
     </div>
     <input id="pageIndex" type="hidden" value="1" />
     <input id="pageSize" type="hidden" value=@Model.CurrentPage.PageSize />
@@ -38,13 +40,5 @@
     <input id="campaignName" type="hidden" value="@Model.CampaignName" />
     <input id="listCategory" type="hidden" value="@Model.Categories" />
 </div>
-<script>
-    var list = @Html.Raw(Json.Encode(Model.Categories));
-    window.onload = $(function () {
-        for (var item in list) {
-            let tmp = $('*[data-customerID="' + item + '"]');
-            tmp.removeAttr("hidden");
-        }
-    })
-</script>
+
     @Scripts.Render("~/bundles/promotion")

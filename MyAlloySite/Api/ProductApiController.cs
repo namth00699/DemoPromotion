@@ -58,7 +58,6 @@ namespace MyAlloySite.Api
                     _eluxCache.Add(cacheKey, results, TimeSpan.FromHours(24), new[] { CacheMesterKeySpec.Categories.Promotion });
                 }
 
-
                 var viewRederer = new ViewRenderer();
                 var html = viewRederer.RenderPartialViewToString("~/Views/PromotionPage/ProductListing.cshtml", results.ProductDTOModels);
                 response = Request.CreateResponse(HttpStatusCode.OK, new ContentListingRespone() { Html = html, HasMore = results.HasMore });

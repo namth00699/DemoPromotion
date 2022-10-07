@@ -1,8 +1,10 @@
 ﻿using EPiServer.Find;
 using EPiServer.ServiceLocation;
+using LinqKit;
 using MyAlloySite.Api;
 using MyAlloySite.Commerce.Products;
 using MyAlloySite.Constant;
+using MyAlloySite.DTO;
 using MyAlloySite.Extensions;
 using MyAlloySite.Models.Pages;
 using System;
@@ -106,8 +108,38 @@ namespace MyAlloySite.Service
                 filterProduct = filterProduct.And(s => s.IndexCategoriesProduct().Match(request.Category));
             }
 
+            if (request.Filters != null && request.Filters.Any())
+            {
+                var filterPromotion = _client.BuildFilter<CommonProducts>();
+                filterPromotion = BuildFilterFromFacets(request.Filters, filterPromotion);
+                query = query.Filter(filterPromotion);
+                //filterProduct = filterProduct.And(s => s.IndexPromotion().PromotionType.Match(1));
+            }
+
             query = query.Filter(filterProduct);
             return query;
+        }
+
+        private FilterBuilder<CommonProducts> BuildFilterFromFacets(List<OptionModel> filters, FilterBuilder<CommonProducts> filterProduct)
+        {
+            int i = 1;
+            foreach(var filter in filters)
+            {
+                if(filter.FilterType == (int)Constant.Constants.FilterType.PromotionType)
+                {
+                    var isParse = int.TryParse(filter.FilterAttribute, out var filterValue);
+                    if(isParse && i == 1)
+                    {
+                        filterProduct = filterProduct.And(s => s.IndexPromotion().PromotionType.Match(filterValue));
+                    }
+                    else
+                    {
+                        filterProduct = filterProduct.Or(s => s.IndexPromotion().PromotionType.Match(filterValue));
+                    }
+                    i++;
+                }
+            }
+            return filterProduct;
         }
 
         public ITypeSearch<CommonProducts> ApplyFacet(ITypeSearch<CommonProducts> query)
