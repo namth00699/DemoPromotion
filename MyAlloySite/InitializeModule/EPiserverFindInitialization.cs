@@ -30,14 +30,14 @@ namespace MyAlloySite.InitializeModule
         private readonly Injected<EPiServer.Find.IClient> client;
         private static ContentClientConventions _catalogContentClientConventions;
         private static IContentEvents _contentEvents;
-        private static IContentLoader _contentLoader;
+        private static IPromotionHelpService _promotionHelpService;
 
         public void Initialize(InitializationEngine context)
         {
             _catalogContentClientConventions = context.Locate.Advanced.GetInstance<ContentClientConventions>();
             _catalogContentClientConventions.ApplyConventions(SearchClient.Instance.Conventions);
             _contentEvents = context.Locate.Advanced.GetInstance<IContentEvents>();
-            _contentLoader = context.Locate.Advanced.GetInstance<IContentLoader>();
+            _promotionHelpService = context.Locate.Advanced.GetInstance<IPromotionHelpService>();
             _contentEvents.PublishedContent += ContentEvents_PublishedContent;
         }
 
@@ -48,7 +48,7 @@ namespace MyAlloySite.InitializeModule
                 try
                 {
                     // Update the index of the parent product when updating the variant
-                    List<CommonProducts> products = GetProductsAffectByPromotion(promotion);
+                    List<CommonProducts> products = _promotionHelpService.GetProductsAffectByPromotion(promotion);
                     ContentIndexer.Instance.Index(products);
 
                     PurgeProductListMemCache();
@@ -60,31 +60,7 @@ namespace MyAlloySite.InitializeModule
             }
         }
 
-        private List<CommonProducts> GetProductsAffectByPromotion(EntryPromotion promotion)
-        {
-            var current = _contentLoader.Get<EntryPromotion>(promotion.ContentLink);
-            var products = new List<CommonProducts>();
-            if (current != null && current is BuyItemsGetGifts buyItemsGetGifts)
-            {
-                foreach (var item in buyItemsGetGifts.Items)
-                {
-                    var variationContent = _contentLoader.Get<VariationContent>(item);
-                    var product = variationContent.GetParentProducts();
-                    var commonProduct = _contentLoader.Get<CommonProducts>(product?.FirstOrDefault());
-                    if (commonProduct != null)
-                    {
-                        products.Add(commonProduct);
-                    }
-                }
-            }
-            if (current != null && current is BuyFromCategoryGetItemDiscount saleOff)
-            {
-                var commonProducts = _contentLoader.GetChildren<CommonProducts>(saleOff.Category);
-                products.AddRange(commonProducts);
-            }
-
-            return products;
-        }
+       
 
         private void PurgeProductListMemCache()
         {

@@ -112,7 +112,6 @@ namespace MyAlloySite.Service
                 var filterPromotion = _client.BuildFilter<CommonProducts>();
                 filterPromotion = BuildFilterFromFacets(request.Filters, filterPromotion);
                 query = query.Filter(filterPromotion);
-                //filterProduct = filterProduct.And(s => s.IndexPromotion().PromotionType.Match(1));
             }
 
             query = query.Filter(filterProduct);
