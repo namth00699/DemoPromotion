@@ -10,6 +10,7 @@ using EPiServer.Find.Framework;
 using EPiServer.Framework;
 using EPiServer.Framework.Initialization;
 using EPiServer.Globalization;
+using EPiServer.Logging;
 using EPiServer.ServiceLocation;
 using MyAlloySite.Cache;
 using MyAlloySite.Commerce.Products;
@@ -22,20 +23,6 @@ using System.Linq;
 
 namespace MyAlloySite.InitializeModule
 {
-    //[InitializableModule]
-    //public class EPiserverFindInitialization : IInitializableModule
-    //{
-    //    public void Initialize(InitializationEngine context)
-    //    {
-    //        throw new System.NotImplementedException();
-    //    }
-
-    //    public void Uninitialize(InitializationEngine context)
-    //    {
-    //        throw new System.NotImplementedException();
-    //    }
-    //}
-
     [ModuleDependency(typeof(EPiServer.Web.InitializationModule))]
     [InitializableModule]
     public class FindConfigModule : IConfigurableModule
@@ -61,36 +48,42 @@ namespace MyAlloySite.InitializeModule
                 try
                 {
                     // Update the index of the parent product when updating the variant
-                    var current = _contentLoader.Get<EntryPromotion>(promotion.ContentLink);
-                    var products = new List<CommonProducts>();
-                    if (current != null && current is BuyItemsGetGifts buyItemsGetGifts)
-                    {
-                        foreach (var item in buyItemsGetGifts.Items)
-                        {
-                            var variationContent = _contentLoader.Get<VariationContent>(item);
-                            var product = variationContent.GetParentProducts();
-                            var commonProduct = _contentLoader.Get<CommonProducts>(product?.FirstOrDefault());
-                            if (commonProduct != null)
-                            {
-                                products.Add(commonProduct);
-                            }
-                        }
-                    }
-                    if (current != null && current is BuyFromCategoryGetItemDiscount saleOff)
-                    {
-                        var commonProducts = _contentLoader.GetChildren<CommonProducts>(saleOff.Category);
-                        products.AddRange(commonProducts);
-                    }
-
-                    var result = ContentIndexer.Instance.Index(products);
+                    List<CommonProducts> products = GetProductsAffectByPromotion(promotion);
+                    ContentIndexer.Instance.Index(products);
 
                     PurgeProductListMemCache();
                 }
                 catch (Exception ex)
                 {
-                    //LogManager.GetLogger().Error(ex.Message, ex);
+                    LogManager.GetLogger().Error(ex.Message, ex);
                 }
             }
+        }
+
+        private List<CommonProducts> GetProductsAffectByPromotion(EntryPromotion promotion)
+        {
+            var current = _contentLoader.Get<EntryPromotion>(promotion.ContentLink);
+            var products = new List<CommonProducts>();
+            if (current != null && current is BuyItemsGetGifts buyItemsGetGifts)
+            {
+                foreach (var item in buyItemsGetGifts.Items)
+                {
+                    var variationContent = _contentLoader.Get<VariationContent>(item);
+                    var product = variationContent.GetParentProducts();
+                    var commonProduct = _contentLoader.Get<CommonProducts>(product?.FirstOrDefault());
+                    if (commonProduct != null)
+                    {
+                        products.Add(commonProduct);
+                    }
+                }
+            }
+            if (current != null && current is BuyFromCategoryGetItemDiscount saleOff)
+            {
+                var commonProducts = _contentLoader.GetChildren<CommonProducts>(saleOff.Category);
+                products.AddRange(commonProducts);
+            }
+
+            return products;
         }
 
         private void PurgeProductListMemCache()
