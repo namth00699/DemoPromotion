@@ -49,6 +49,7 @@ namespace MyAlloySite.Controllers.Pages
                        new Dictionary<string, object>
                        {
                             { "language", ContentLanguage.PreferredCulture?.Name },
+                            { "campaign", currentPage.Campaign.ID }
                        }, nameof(PromotionPageController), nameof(Index));
 
                 var cachedModel = _eluxCache.Get<PromotionViewModel>(buildCacheKey);

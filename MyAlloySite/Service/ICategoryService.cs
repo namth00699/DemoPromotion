@@ -71,11 +71,12 @@ namespace MyAlloySite.Service
            
             if (list == null || !list.Any())
             {
-                foreach (var item in categories)
-                {
-                    var tmp = item as TestCategory;
-                    results.Add(new ProductDTOModel { Name = tmp.Name, Code = tmp.Code, Image = tmp.Image });
-                }
+                //foreach (var item in categories)
+                //{
+                //    var tmp = item as TestCategory;
+                //    results.Add(new ProductDTOModel { Name = tmp.Name, Code = tmp.Code, Image = tmp.Image });
+                //}
+                return results;
             }
             else
             {

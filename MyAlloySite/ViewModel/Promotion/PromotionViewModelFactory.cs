@@ -107,11 +107,11 @@ namespace MyAlloySite.ViewModel
         private IEnumerable<ProductDTOModel> Search(PromotionPage currentPage, ProductRequestModel model)
         {
             var query = _client.Search<CommonProducts>();
-
-            query = _buildQueryService.ApplyFilter(model, query, _client);
             query = _buildQueryService.ApplyFacet(query, currentPage);
+            query = _buildQueryService.ApplyFilter(model, query, _client);
             query = _buildQueryService.ApplySorting(model.Sort, query);
             query = _buildQueryService.SetPageSize(query, model.PageSize, model.PageIndex);
+            query = query.StaticallyCacheFor(TimeSpan.FromSeconds(1));
 
             return query.Select(s => new ProductDTOModel
             {

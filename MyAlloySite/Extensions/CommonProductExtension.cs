@@ -122,7 +122,7 @@ namespace MyAlloySite.Extensions
                 var buildPromotionKey = _eluxCache.BuildCacheKey(
                    new Dictionary<string, object>
                    {
-                        { "campaign", campaign},
+                        { "campaign", campaign.Name},
                         { "promotion", nameof(PromotionItems)},
                         { "language", ContentLanguage.PreferredCulture?.Name },
                    }, string.Empty, string.Empty);

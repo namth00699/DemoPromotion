@@ -147,6 +147,7 @@ namespace MyAlloySite.Service
             {
                 query = query.FilterFacet(Constants.PromotionType.BuyItemsGetGifts.ToString(),
                     s => s.IndexPromotion().PromotionType.Match((int)Constants.PromotionType.BuyItemsGetGifts));
+
                 query = query.FilterFacet(Constants.PromotionType.SaleOff.ToString(),
                     s => s.IndexPromotion().PromotionType.Match((int)Constants.PromotionType.SaleOff));
             }
