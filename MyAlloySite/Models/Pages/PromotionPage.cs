@@ -40,27 +40,11 @@ namespace MyAlloySite.Models.Pages
         public virtual bool DisplayFilterPromotionType { get; set; }
 
         [Display(
-           Name = "Display Filter Price",
-           Description = "",
-           GroupName = Global.TabNames.Filter,
-           Order = 30)]
-        [CultureSpecific]
-        public virtual bool DisplayFilterPrice { get; set; }
-
-        [Display(
-           Name = "Setting Filter Price",
-           Description = "",
-           GroupName = Global.TabNames.Filter,
-           Order = 40)]
-        [EditorDescriptor(EditorDescriptorType = typeof(CollectionEditorDescriptor<FilterMoneyModel>))]
-        public virtual IList<FilterMoneyModel> FilterPrice { get; set; }
-
-        [Display(
           Name = "Setting PageSize",
           Description = "",
           GroupName = Global.TabNames.Filter,
           Order = 40)]
         [CultureSpecific]
-        public virtual int PageSize { get; set; }
+        public virtual int PageSize { get; set; } = 3;
     }
 }

@@ -56,11 +56,12 @@ $(document).ready(
             var index = $('#pageIndex').val();
             var size = $('#pageSize').val();
             var campaign = $('#campaignName').val();
-            var sort = $('#sorting-product').find(":selected").val();;
+            var sort = $('#sorting-product').find(":selected").val();
+            var filters = GetFilterData();
 
             $.ajax({
                 url: url,
-                data: { pageIndex: index, pageSize: size, category: category, campaign: campaign, sort: sort },
+                data: { pageIndex: index, pageSize: size, category: category, campaign: campaign, sort: sort, filters: filters },
                 type: 'Post',
                 success: function (response) {
                     $('.product-containter').remove();
@@ -88,10 +89,10 @@ $(document).ready(
             var size = $('#pageSize').val();
             var campaign = $('#campaignName').val();
             var sort = $('#sorting-product').find(":selected").val();;
-
+            var filters = GetFilterData();
             $.ajax({
                 url: url,
-                data: { pageIndex: index, pageSize: size, category: category, campaign: campaign, sort: sort },
+                data: { pageIndex: index, pageSize: size, category: category, campaign: campaign, sort: sort, filters: filters  },
                 type: 'Post',
                 success: function (response) {
                     $('#pageIndex').val(index);
@@ -119,10 +120,10 @@ $(document).ready(
             var size = $('#pageSize').val();
             var campaign = $('#campaignName').val();
             var sort = self.find(":selected").val();;
-
+            var filters = GetFilterData();
             $.ajax({
                 url: url,
-                data: { pageIndex: index, pageSize: size, category: category, campaign: campaign, sort: sort },
+                data: { pageIndex: index, pageSize: size, category: category, campaign: campaign, sort: sort, filters: filters },
                 type: 'Post',
                 success: function (response) {
                     $('.product-containter').remove();
