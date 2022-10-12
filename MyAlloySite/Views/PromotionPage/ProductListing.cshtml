@@ -4,31 +4,35 @@
     @foreach (var item in Model)
     {
         var imageUrl = (item.Image != null) ? Url.ContentUrl(item.Image) : "";
-    <div class="span3 container" style="text-align: left; word-wrap: break-word; border-bottom:groove; margin-left:0px">
-        <div>
+    <div class="span3 container" style="text-align: left; word-wrap: break-word; margin-left:0px">
+        <div class="box">
+            @if (item.FreeGift == true)
+            {
+                <div class="ribbon ribbon-top-left"><span>Free Gift</span></div>
+            }
             <div>
                 <img width="200" height="200" style="margin-left: auto; margin-right: auto; display:block" src="@imageUrl"
                      alt="@item.Name" />
             </div>
-            <div style="padding-left:30px">
+            <div style="padding-left:10px">
                 <span class="row" style="font-size:15px">@item.Name</span>
                 <span class="row" style="font-size:15px">@item.Code</span>
-                @if (item.FreeGift == true)
-                {
-                    <span class="row" style="font-size: 15px; color: #f7542b">Buy this Item for free gift</span>
-                }
+
             </div>
-            <div style="padding-left:30px">
+            <div style="padding-left:10px">
                 <span class="row">
                     AutoDose for precise dosage, less wear and tear*.
                     SensorWash with AI removes 49 different visible stains*.
                     No more visible detergent residue with UltraMix*.
                 </span>
             </div>
-            <div style="padding-left: 30px; margin-top: 20px;">
+            <div style="padding-left: 10px;">
                 <h3>
                     @item.ActualPrice USD
-                    <span class="pull-right" style=" text-decoration: line-through;">@item.OriginalPrice USD</span>
+                    @if (item.ActualPrice != item.OriginalPrice)
+                    {
+                        <span class="pull-right" style=" text-decoration: line-through;">@item.OriginalPrice USD</span>
+                    }
                 </h3>
             </div>
         </div>

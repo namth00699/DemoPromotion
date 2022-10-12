@@ -37,6 +37,8 @@ namespace MyAlloySite.Business.Initialization
             bundles.Add(new ScriptBundle("~/bundles/promotion").Include(
                    "~/Static/js/Promotion/promotion1.js"
                   ));
+            bundles.Add(new StyleBundle("~/Content/ribbon").Include(
+                   "~/Static/css/ribbon.css"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
                    "~/Content/bootstrap.css",

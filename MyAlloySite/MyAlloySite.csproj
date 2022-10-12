@@ -608,6 +608,7 @@
     <Content Include="Static\css\images\ui-icons_cd0a0a_256x240.png" />
     <Content Include="Static\css\jquery-ui.css" />
     <Content Include="Static\css\media.css" />
+    <Content Include="Static\css\ribbon.css" />
     <Content Include="Static\css\style.css" />
     <Content Include="Static\gfx\carouselbackground.png" />
     <Content Include="Static\gfx\contact.jpg" />

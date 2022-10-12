@@ -26,7 +26,14 @@
                 @Html.Partial("~/Views/PromotionPage/ProductListing.cshtml", Model.Products)
             </div>
             <div id="btn_showMore" class="row" style="clear:both; display:flex; justify-content:center">
-                <button style="background-color: #333; color:aliceblue; width: 250px; padding: 15px 32px; " type="button" class="btn-primary" id="showMore">Show more</button>
+                @if (Model.Paging.HasMore)
+                {
+                    <button style="background-color: #333; color:aliceblue; width: 250px; padding: 15px 32px; " type="button" class="btn-primary" id="showMore">Show more</button>
+                }
+                else
+                {
+                    <button style="background-color: #333; color:aliceblue; width: 250px; padding: 15px 32px; " type="button" class="btn-primary" id="showMore" hidden>Show more</button>
+                }
             </div>
         </div>
     </div>
@@ -37,4 +44,6 @@
     <input id="listCategory" type="hidden" value="@Model.Categories" />
 </div>
 
-    @Scripts.Render("~/bundles/promotion")
+@Styles.Render("~/Content/ribbon")
+@Scripts.Render("~/bundles/promotion")
+
