@@ -171,3 +171,17 @@ $(document).ready(
         });
     })
 );
+
+$(document).ready(
+    $(function () {
+        $('#MenuBlock').click(function () {
+            var url = '/api/content/ResetCache';
+            $.ajax({
+                url: url,
+                type: 'Get',
+                success: function (response) {
+                }
+            });
+        });
+    })
+);

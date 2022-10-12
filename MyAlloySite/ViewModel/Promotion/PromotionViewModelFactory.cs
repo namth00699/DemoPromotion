@@ -121,7 +121,8 @@ namespace MyAlloySite.ViewModel
                 Image = s.Thumbnail,
                 ActualPrice = s.IndexPromotion().ActualPrice,
                 OriginalPrice = s.IndexPromotion().OriginalPrice,
-                Percent = s.IndexPromotion().GreatestPercent
+                Percent = s.IndexPromotion().GreatestPercent,
+                FreeGift = s.IndexPromotion().PromotionType.Contains((int)PromotionType.BuyItemsGetGifts)
             }).GetResult();
         }
     }

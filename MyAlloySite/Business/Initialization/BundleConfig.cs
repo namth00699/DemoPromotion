@@ -35,7 +35,7 @@ namespace MyAlloySite.Business.Initialization
                    "~/Scripts/respond.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/promotion").Include(
-                   "~/Static/js/Promotion/promotion.js"
+                   "~/Static/js/Promotion/promotion1.js"
                   ));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(

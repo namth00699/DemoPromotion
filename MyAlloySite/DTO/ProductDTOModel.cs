@@ -21,6 +21,8 @@ namespace MyAlloySite.DTO
         public string Description { get; set; }
 
         public decimal Percent { get; set; }
+
+        public bool? FreeGift { get; set; }
     }
 
     public class ProductResponseModel

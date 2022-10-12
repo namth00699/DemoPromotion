@@ -13,6 +13,10 @@
             <div style="padding-left:30px">
                 <span class="row" style="font-size:15px">@item.Name</span>
                 <span class="row" style="font-size:15px">@item.Code</span>
+                @if (item.FreeGift == true)
+                {
+                    <span class="row" style="font-size: 15px; color: #f7542b">Buy this Item for free gift</span>
+                }
             </div>
             <div style="padding-left:30px">
                 <span class="row">

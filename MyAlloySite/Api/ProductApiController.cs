@@ -69,5 +69,22 @@ namespace MyAlloySite.Api
                 return response = Request.CreateResponse(HttpStatusCode.OK, e.InnerException);
             }
         }
+
+        [HttpGet]
+        public HttpResponseMessage ResetCache()
+        {
+            HttpResponseMessage response;
+            try
+            {
+                _eluxCache.Remove(CacheMesterKeySpec.Categories.Promotion);
+                response = Request.CreateResponse(HttpStatusCode.OK);
+                return response;
+            }
+            catch (Exception e)
+            {
+                Logger.Error("[ERROR] Failed at: {0}.{1}. Full Exception: {2}", "ProductApiController", "ResetCache", e);
+                return response = Request.CreateResponse(HttpStatusCode.OK, e.InnerException);
+            }
+        }
     }
 }

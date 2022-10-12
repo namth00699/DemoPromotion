@@ -70,8 +70,6 @@ namespace MyAlloySite.Extensions
             return _promotionHelpService.SetOriginalValue(promotionProductModel);
         }
 
-
-
         private static List<RewardDescription> GetListRewardDescription(CommonProducts product)
         {
             var promotions = new List<RewardDescription>();

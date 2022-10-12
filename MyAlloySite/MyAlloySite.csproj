@@ -638,7 +638,7 @@
     <Content Include="Static\js\bootstrap.js" />
     <Content Include="Static\js\jquery-ui.js" />
     <Content Include="Static\js\jquery.js" />
-    <Content Include="Static\js\Promotion\promotion.js" />
+    <Content Include="Static\js\Promotion\promotion1.js" />
     <Content Include="Static\jwplayer\jwplayer.js" />
     <Content Include="Static\jwplayer\player.swf" />
     <Content Include="Static\jwplayer\preview.jpg" />

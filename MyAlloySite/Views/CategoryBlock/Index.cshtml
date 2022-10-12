@@ -1,6 +1,6 @@
 ﻿@model List<MyAlloySite.DTO.ProductDTOModel>
 <div style="overflow:hidden; padding-left:100px ; margin-bottom:20px; border-bottom:solid">
-    <div><h3 class="" style="font-family:'Helvetica , sans-serif'">Menu</h3></div>
+    <div id="MenuBlock"><h3 style="font-family:'Helvetica , sans-serif'">Menu</h3></div>
     @foreach (var item in Model)
     {
         var imageUrl = (item.Image != null) ? Url.ContentUrl(item.Image) : "";
